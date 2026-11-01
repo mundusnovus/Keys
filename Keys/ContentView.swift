@@ -1,17 +1,16 @@
 import SwiftUI
-import Playgrounds
 
 struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
+    @State private var session: VaultSession
+
+    init() {
+        _session = State(initialValue: VaultSession())
     }
-}
 
-#Preview {
-    ContentView()
-}
-
-#Playground {
-    _ = 1 + 2
+    var body: some View {
+        let _ = KeysRuntime.attach(session)
+        VaultRoot()
+            .environment(session)
+            .task { await session.start() }
+    }
 }
