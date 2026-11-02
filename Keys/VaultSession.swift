@@ -1,5 +1,8 @@
+import CloudKit
 import Foundation
 import LocalAuthentication
+import Observation
+import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #elseif canImport(AppKit)
@@ -24,6 +27,7 @@ enum VaultFilter: Hashable {
     case folder(UUID)
 }
 
+/// The app-level handle App Intents use. Intents are not main-actor by default, so every access hops here.
 @MainActor
 enum KeysRuntime {
     static weak var session: VaultSession?
@@ -36,20 +40,27 @@ enum KeysRuntime {
 @MainActor
 enum Clipboard {
     private static var secret: String?
+    private static var clearTask: Task<Void, Never>?
 
-    static func copySecret(_ value: String) {
+    /// Copies a secret and clears it after the person's chosen delay. A delay of 0 never clears automatically.
+    static func copySecret(_ value: String, clearAfter seconds: TimeInterval) {
+        guard !value.isEmpty else { return }
         secret = value
         write(value)
+        clearTask?.cancel()
+        guard seconds > 0 else { return }
         let copied = value
-        Task {
-            try? await Task.sleep(for: .seconds(45))
-            guard secret == copied else { return }
+        clearTask = Task {
+            try? await Task.sleep(for: .seconds(seconds))
+            guard !Task.isCancelled, secret == copied else { return }
             if current() == copied { write("") }
             if secret == copied { secret = nil }
         }
     }
 
     static func clearSecrets() {
+        clearTask?.cancel()
+        clearTask = nil
         if let secret, current() == secret { write("") }
         secret = nil
     }
@@ -76,34 +87,100 @@ enum Clipboard {
     }
 }
 
-@MainActor @Observable
+@MainActor
+@Observable
 final class VaultSession {
     var phase: VaultPhase = .loading
     var items: [VaultItem] = []
     var password = ""
     var message = ""
-    var syncStatus = "Not synced yet."
     var recovery = ""
     var working = false
     var autofillOn = false
-    private(set) var iCloudOff = false
-    private var key: Data?
-    private var started = false
-    private var syncTail: Task<Void, Never>?
-    private let cloud = CloudSync()
+    var iCloudOff = false
+    var needsPasswordReset = false
+    var recoveryMessage = ""
+    var suggestBiometrics = false
+
+    // Sync, mirrored from CloudSync so SwiftUI observes one object.
+    var syncPhase: SyncPhase = .idle
+    var lastSync: Date?
+    var syncMessage = "Not synced yet."
+    var syncError: String?
+    var pendingUploads = 0
+    var iCloudAccount = "Checking iCloud…"
+
+    // Biometrics.
+    var biometricsAvailable = DeviceKey.canAuthenticate
+    var biometricsEnabled = false
+    var biometricsMessage = ""
+
+    // Navigation requests from Siri, Handoff, or a command.
+    var openItemID: UUID?
+    var searchRequest: String?
+    var newItemRequest: ItemKind?
+
+    let preferences: KeysPreferences
+
+    @ObservationIgnored private var key: Data?
+    @ObservationIgnored private var started = false
+    @ObservationIgnored private var syncTail: Task<Void, Never>?
+    @ObservationIgnored private var autoLockTask: Task<Void, Never>?
+    @ObservationIgnored private var backgroundedAt: Date?
+    @ObservationIgnored private var accountObserver: NSObjectProtocol?
+    @ObservationIgnored private let cloud = CloudSync()
+
+    init(preferences: KeysPreferences = .shared) {
+        self.preferences = preferences
+    }
+
+    // MARK: - Derived state
 
     var folders: [VaultItem] {
         items.filter { $0.kind == .folder && $0.deleted == nil }
             .sorted { $0.displayTitle.localizedCaseInsensitiveCompare($1.displayTitle) == .orderedAscending }
     }
 
+    var stats: VaultStats { VaultStats(items: items) }
+    var findings: [AuditFinding] { VaultAudit.findings(items) }
+    var favoriteCount: Int { items.filter { $0.deleted == nil && $0.favorite }.count }
+    var trashCount: Int { items.filter { $0.deleted != nil }.count }
+
+    var liveCount: Int { items.filter { $0.deleted == nil && $0.kind != .folder }.count }
+
+    var syncContainer: String { VaultDisk.containerID }
+    var syncEnvironment: String {
+        #if DEBUG
+        "Development"
+        #else
+        "Production"
+        #endif
+    }
+    var storageBytes: Int64 {
+        let attributes = try? FileManager.default.attributesOfItem(atPath: VaultDisk.fileURL.path)
+        return (attributes?[.size] as? NSNumber)?.int64Value ?? 0
+    }
+
+    var recents: [VaultItem] {
+        items.filter { $0.deleted == nil && $0.kind != .folder }
+            .sorted { $0.revised > $1.revised }
+            .prefix(5)
+            .map { $0 }
+    }
+
+    func item(_ id: UUID?) -> VaultItem? {
+        guard let id else { return nil }
+        return items.first { $0.id == id }
+    }
+
     func visible(filter: VaultFilter, query: String) -> [VaultItem] {
-        items.filter { item in
+        let healthIDs = Set(findings.map(\.itemID))
+        return items.filter { item in
             switch filter {
             case .all: item.deleted == nil && item.kind != .folder
             case .favorites: item.deleted == nil && item.favorite
             case .trash: item.deleted != nil
-            case .health: false
+            case .health: item.deleted == nil && healthIDs.contains(item.id)
             case .kind(let kind): item.deleted == nil && item.kind == kind
             case .folder(let id): item.deleted == nil && item.folderID == id
             }
@@ -112,10 +189,16 @@ final class VaultSession {
         .sorted { $0.displayTitle.localizedCaseInsensitiveCompare($1.displayTitle) == .orderedAscending }
     }
 
+    func count(for filter: VaultFilter) -> Int {
+        visible(filter: filter, query: "").count
+    }
+
     func searchTitles(_ words: String) -> [String] {
         guard key != nil else { return [] }
         return visible(filter: .all, query: words).prefix(5).map(\.displayTitle)
     }
+
+    // MARK: - Lifecycle
 
     func start() async {
         guard !started else { return }
@@ -124,12 +207,18 @@ final class VaultSession {
         let rules = VaultRules.run()
         assert(rules == "ok", rules)
         #endif
+        biometricsAvailable = DeviceKey.canAuthenticate
+        biometricsEnabled = preferences.biometricsEnabled && DeviceKey.exists
+        if !biometricsEnabled { preferences.biometricsEnabled = false }
+
+        observeAccountChanges()
         let local = VaultDisk.read()
         switch await cloud.lookupHeader() {
         case .found(let header):
             if let local {
                 if local.header.salt != header.salt, !cloud.isPaused() {
                     phase = .mismatch
+                    reflectCloud()
                     return
                 }
             } else {
@@ -149,11 +238,47 @@ final class VaultSession {
             if local == nil {
                 message = "iCloud is not available. A vault created now stays on this device until iCloud is back."
             } else {
-                syncStatus = "iCloud is not available. This vault stays on this device until it is."
+                syncMessage = "iCloud is not available. This vault stays on this device until it is."
             }
         }
         autofillOn = await IdentityPublisher.autofillEnabled()
+        iCloudAccount = await cloud.accountExplanation()
+        reflectCloud()
+        KeysIntelligence.prewarm()
     }
+
+    func noteActive() async {
+        autoLockTask?.cancel()
+        autoLockTask = nil
+        if let backgroundedAt {
+            let elapsed = Date.now.timeIntervalSince(backgroundedAt)
+            if preferences.autoLock != .immediately, elapsed >= Double(preferences.autoLock.rawValue) {
+                lock()
+            }
+        }
+        backgroundedAt = nil
+        guard phase == .unlocked || phase == .locked else { return }
+        await syncNow()
+    }
+
+    func noteBackground() {
+        backgroundedAt = .now
+        autoLockTask?.cancel()
+        Clipboard.clearSecrets()
+        guard phase == .unlocked else { return }
+        let delay = preferences.autoLock
+        if delay == .immediately {
+            lock()
+            return
+        }
+        autoLockTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay.rawValue))
+            guard !Task.isCancelled else { return }
+            await MainActor.run { self?.lock() }
+        }
+    }
+
+    // MARK: - Setup and unlock
 
     func create(password typed: String, confirm: String) async {
         guard typed == confirm else {
@@ -181,7 +306,9 @@ final class VaultSession {
             try VaultDisk.write(VaultFile.empty(header: made.header))
             key = made.key
             items = []
-            try? DeviceKey.save(made.key)
+            try? DeviceKey.delete()
+            preferences.biometricsEnabled = false
+            biometricsEnabled = false
             recovery = Base32.groups(made.recovery)
             password = ""
             message = ""
@@ -195,6 +322,8 @@ final class VaultSession {
     func acknowledgeRecovery() {
         recovery = ""
         phase = .unlocked
+        suggestBiometrics = biometricsAvailable && !biometricsEnabled
+        scheduleSync()
     }
 
     func unlock() async {
@@ -212,8 +341,8 @@ final class VaultSession {
             try await adopt(opened, file: file)
             password = ""
             message = ""
-            try? DeviceKey.save(opened)
             phase = .unlocked
+            keepBiometricKey(opened)
             scheduleSync()
         } catch {
             message = "That password does not open this vault."
@@ -221,36 +350,118 @@ final class VaultSession {
     }
 
     func unlockBiometric() async {
+        guard biometricsEnabled else {
+            message = "Turn on Face ID in Settings after unlocking with your master password once."
+            return
+        }
         let context = LAContext()
         context.localizedReason = "Unlock Keys"
-        guard let opened = DeviceKey.load(context: context), let file = VaultDisk.read() else {
-            message = "Use the master password on this device once."
+        context.localizedFallbackTitle = "Use Master Password"
+        guard let file = VaultDisk.read() else {
+            message = "The vault file is missing."
             return
         }
         do {
+            let opened = try DeviceKey.load(context: context)
             try await adopt(opened, file: file)
             message = ""
             phase = .unlocked
             scheduleSync()
         } catch {
-            message = "The vault on this device could not be opened."
+            let description = (error as? VaultError)?.errorDescription ?? error.localizedDescription
+            message = description
+            if let vaultError = error as? VaultError,
+               case .keychain(let status) = vaultError, status == errSecItemNotFound {
+                preferences.biometricsEnabled = false
+                biometricsEnabled = false
+            }
         }
     }
 
-    func lock() {
-        guard phase == .unlocked || phase == .recovery else { return }
-        key = nil
-        items = []
-        password = ""
-        recovery = ""
-        Clipboard.clearSecrets()
-        phase = .locked
+    /// Offered after a successful password unlock. Saves the vault key behind Face ID / Touch ID.
+    @discardableResult
+    func enableBiometrics() -> Bool {
+        guard let key else {
+            biometricsMessage = "Unlock with your master password first."
+            return false
+        }
+        guard DeviceKey.canAuthenticate else {
+            biometricsMessage = "Set a device passcode or Face ID in Settings first."
+            return false
+        }
+        do {
+            try DeviceKey.save(key)
+            preferences.biometricsEnabled = true
+            biometricsEnabled = true
+            biometricsMessage = ""
+            return true
+        } catch {
+            preferences.biometricsEnabled = false
+            biometricsEnabled = false
+            biometricsMessage = (error as? VaultError)?.errorDescription ?? error.localizedDescription
+            return false
+        }
+    }
+
+    func disableBiometrics() {
+        DeviceKey.delete()
+        preferences.biometricsEnabled = false
+        biometricsEnabled = false
+        biometricsMessage = "Face ID is off. The master password is still required."
+    }
+
+    func unlockRecovery(_ code: String) async {
+        guard let file = VaultDisk.read() else {
+            recoveryMessage = "Create a vault first."
+            return
+        }
+        guard let data = Base32.decode(code), !data.isEmpty else {
+            recoveryMessage = "That is not a recovery key."
+            return
+        }
+        working = true
+        defer { working = false }
+        do {
+            let opened = try await Task.detached {
+                try VaultCrypto.unlock(recoveryKey: data, header: file.header)
+            }.value
+            try await adopt(opened, file: file)
+            phase = .unlocked
+            needsPasswordReset = true
+            recoveryMessage = ""
+            message = "Recovery key accepted. Set a new master password now."
+            scheduleSync()
+        } catch {
+            recoveryMessage = "That recovery key does not open this vault."
+        }
+    }
+
+    func setNewPassword(_ updated: String, confirm: String) async -> String? {
+        guard updated == confirm else { return "Those passwords do not match." }
+        guard updated.count >= VaultCrypto.minimumPasswordLength else { return "Use at least 12 characters." }
+        guard let key, let file = VaultDisk.read() else { return "Unlock Keys first." }
+        do {
+            let header = try await Task.detached {
+                try VaultCrypto.rewrap(key: key, password: updated, recoveryWrap: file.header.recoveryWrap)
+            }.value
+            try VaultDisk.update { stored in
+                stored.header = header
+                stored.headerNeedsUpload = true
+            }
+            needsPasswordReset = false
+            message = "Master password changed."
+            scheduleSync()
+            return nil
+        } catch {
+            return error.localizedDescription
+        }
     }
 
     func keepLocalVault() {
         cloud.pause()
         phase = .locked
         message = "Sync is paused. This device keeps its own vault."
+        reflectCloud()
     }
 
     func useICloudVault() async {
@@ -262,10 +473,97 @@ final class VaultSession {
             try await cloud.replaceWithRemote()
             phase = .locked
             message = "Unlock the iCloud vault with its master password. The vault that was only on this device is gone."
+            reflectCloud()
         } catch {
-            message = error.localizedDescription
+            message = CloudSync.friendly(error)
         }
     }
+
+    func lock() {
+        guard phase == .unlocked || phase == .recovery || needsPasswordReset else { return }
+        key = nil
+        items = []
+        password = ""
+        recovery = ""
+        needsPasswordReset = false
+        Clipboard.clearSecrets()
+        phase = .locked
+        message = ""
+        Task { await SpotlightIndex.removeAll() }
+    }
+
+    // MARK: - Sync
+
+    func syncNow() async {
+        guard phase != .mismatch else { return }
+        let report = await cloud.sync(key: key)
+        reflectCloud()
+        switch report {
+        case .synced(let status):
+            syncMessage = status
+            syncError = nil
+            iCloudOff = false
+            if key != nil { try? await reload() }
+        case .mismatch:
+            if phase == .unlocked || phase == .locked { phase = .mismatch }
+            syncError = "iCloud has a different Keys vault than this device."
+        case .paused:
+            syncMessage = "Sync is paused. This device is keeping its own vault."
+        case .offline(let status):
+            syncError = status
+            syncMessage = status
+            iCloudOff = true
+        case .busy:
+            break
+        }
+        autofillOn = await IdentityPublisher.autofillEnabled()
+        iCloudAccount = await cloud.accountExplanation()
+    }
+
+    private func reflectCloud() {
+        syncPhase = cloud.phase
+        lastSync = cloud.lastSync
+        pendingUploads = cloud.pendingUploads
+        if cloud.lastMessage != "Not synced yet." { syncMessage = cloud.lastMessage }
+        if let error = cloud.lastError { syncError = error }
+    }
+
+    func scheduleSync() {
+        let previous = syncTail
+        syncTail = Task { [weak self] in
+            await previous?.value
+            await self?.syncNow()
+        }
+    }
+
+    func resumeSync() {
+        cloud.resume()
+        scheduleSync()
+    }
+
+    func refreshAccount() async {
+        iCloudAccount = await cloud.accountExplanation()
+    }
+
+    func pauseSync() {
+        cloud.pause()
+        reflectCloud()
+    }
+
+    private func observeAccountChanges() {
+        guard accountObserver == nil else { return }
+        accountObserver = NotificationCenter.default.addObserver(
+            forName: Notification.Name.CKAccountChanged, object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
+                self.iCloudAccount = await self.cloud.accountExplanation()
+                await self.syncNow()
+            }
+        }
+    }
+
+    // MARK: - Items
 
     func save(_ item: VaultItem) {
         var stored = item
@@ -280,7 +578,7 @@ final class VaultSession {
             try persist(stored)
             message = ""
             scheduleSync()
-            Task { await IdentityPublisher.publish(items) }
+            Task { await refreshIndexes() }
         } catch {
             message = error.localizedDescription
         }
@@ -292,7 +590,7 @@ final class VaultSession {
         item.revised = Date()
         try? persist(item)
         scheduleSync()
-        Task { await IdentityPublisher.publish(items) }
+        Task { await refreshIndexes() }
     }
 
     func restore(_ id: UUID) {
@@ -301,7 +599,7 @@ final class VaultSession {
         item.revised = Date()
         try? persist(item)
         scheduleSync()
-        Task { await IdentityPublisher.publish(items) }
+        Task { await refreshIndexes() }
     }
 
     func emptyTrash() {
@@ -316,12 +614,23 @@ final class VaultSession {
         }
         items.removeAll { $0.deleted != nil }
         scheduleSync()
-        Task { await IdentityPublisher.publish(items) }
+        Task { await refreshIndexes() }
     }
 
     func toggleFavorite(_ id: UUID) {
         guard var item = items.first(where: { $0.id == id }) else { return }
         item.favorite.toggle()
+        save(item)
+    }
+
+    func duplicate(_ id: UUID) {
+        guard var item = items.first(where: { $0.id == id }) else { return }
+        item.id = UUID()
+        item.title = item.displayTitle + " copy"
+        item.created = .now
+        item.revised = .now
+        item.favorite = false
+        item.passwordHistory = []
         save(item)
     }
 
@@ -340,7 +649,6 @@ final class VaultSession {
                 skipped += 1
                 continue
             }
-            item.id = item.kind == .folder ? item.id : item.id
             item.revised = Date()
             do {
                 try persist(item)
@@ -350,7 +658,7 @@ final class VaultSession {
             }
         }
         scheduleSync()
-        Task { await IdentityPublisher.publish(items) }
+        Task { await refreshIndexes() }
         return "Added \(added). Skipped \(skipped)."
     }
 
@@ -363,56 +671,41 @@ final class VaultSession {
                 try VaultCrypto.unlock(password: current, header: file.header)
             }.value
             guard opened == key else { return "That is not the current master password." }
-            let recoveryWrap = file.header.recoveryWrap
-            let header = try await Task.detached {
-                try VaultCrypto.rewrap(key: key, password: newPassword, recoveryWrap: recoveryWrap)
-            }.value
-            try VaultDisk.update { stored in
-                stored.header = header
-                stored.headerNeedsUpload = true
-            }
-            scheduleSync()
-            return nil
+            return await setNewPassword(newPassword, confirm: confirm)
         } catch {
-            return error.localizedDescription
+            return "That is not the current master password."
         }
     }
 
+    func copy(_ secret: String) {
+        guard !secret.isEmpty else { return }
+        Clipboard.copySecret(secret, clearAfter: TimeInterval(preferences.clipboardClear.rawValue))
+    }
+
     func encryptedExport() -> Data? {
-        guard let url = Optional(VaultDisk.fileURL),
-              let data = try? Data(contentsOf: url) else { return nil }
-        return data
+        try? Data(contentsOf: VaultDisk.fileURL)
     }
 
     func plaintextCSV() -> String {
         VaultTransfer.csv(items)
     }
 
-    func syncNow() async {
-        guard phase != .mismatch else { return }
-        let report = await cloud.sync(key: key)
-        switch report {
-        case .synced(let status):
-            syncStatus = status
-            iCloudOff = false
-            if key != nil { try? await reload() }
-        case .mismatch:
-            if phase == .unlocked || phase == .locked {
-                phase = .mismatch
-            }
-        case .paused:
-            syncStatus = "Sync is paused. This device is keeping its own vault."
-        case .offline(let status):
-            syncStatus = status
-            iCloudOff = true
-        }
-        autofillOn = await IdentityPublisher.autofillEnabled()
+    /// Local only: the iCloud copy stays, and comes back on the next signed-in launch. The copy says so.
+    func eraseLocalVault() {
+        try? FileManager.default.removeItem(at: VaultDisk.fileURL)
+        try? FileManager.default.removeItem(at: VaultDisk.syncStateURL)
+        DeviceKey.delete()
+        preferences.biometricsEnabled = false
+        biometricsEnabled = false
+        key = nil
+        items = []
+        recovery = ""
+        password = ""
+        phase = .setup
+        message = "This device's vault was erased. The iCloud copy will come back when you sign in again."
     }
 
-    func copy(_ secret: String) {
-        guard !secret.isEmpty else { return }
-        Clipboard.copySecret(secret)
-    }
+    // MARK: - Private
 
     private func adopt(_ opened: Data, file: VaultFile) async throws {
         let openedItems = try await Task.detached {
@@ -420,7 +713,7 @@ final class VaultSession {
         }.value
         key = opened
         items = openedItems
-        await IdentityPublisher.publish(openedItems)
+        await refreshIndexes()
     }
 
     private func reload() async throws {
@@ -428,7 +721,19 @@ final class VaultSession {
         items = try await Task.detached {
             try VaultBox.openAll(file, key: key)
         }.value
-        await IdentityPublisher.publish(items)
+        await refreshIndexes()
+    }
+
+    private func keepBiometricKey(_ opened: Data) {
+        guard preferences.biometricsEnabled else { return }
+        do {
+            try DeviceKey.save(opened)
+            biometricsEnabled = true
+        } catch {
+            preferences.biometricsEnabled = false
+            biometricsEnabled = false
+            biometricsMessage = (error as? VaultError)?.errorDescription ?? error.localizedDescription
+        }
     }
 
     private func persist(_ item: VaultItem) throws {
@@ -450,12 +755,8 @@ final class VaultSession {
         }
     }
 
-    private func scheduleSync() {
-        let previous = syncTail
-        let task = Task { [weak self] in
-            await previous?.value
-            await self?.syncNow()
-        }
-        syncTail = task
+    private func refreshIndexes() async {
+        await IdentityPublisher.publish(items)
+        await SpotlightIndex.reindex(items, allowed: preferences.shareWithSiri)
     }
 }

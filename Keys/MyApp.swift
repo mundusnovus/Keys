@@ -1,3 +1,4 @@
+import AppIntents
 import SwiftUI
 #if canImport(UIKit)
 import UIKit
@@ -12,21 +13,55 @@ struct MyApp: App {
     #elseif canImport(AppKit)
     @NSApplicationDelegateAdaptor(KeysNotifications.self) private var notifications
     #endif
-    @Environment(\.scenePhase) private var scenePhase
+
+    @State private var session = VaultSession()
+    @State private var preferences = KeysPreferences.shared
+
+    init() {
+        _ = BrandFont.isRegistered
+        KeysShortcuts.updateAppShortcutParameters()
+        KeysIntelligence.prewarm()
+    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(session: session, preferences: preferences)
+                .environment(preferences)
+                .task {
+                    KeysRuntime.attach(session)
+                    await session.start()
+                }
         }
         #if os(macOS)
-        .defaultSize(width: 980, height: 720)
-        #endif
+        .defaultSize(width: 1080, height: 760)
         .commands {
+            CommandGroup(replacing: .newItem) {
+                Button("New Login") { session.newItemRequest = .login }
+                    .keyboardShortcut("n")
+                Button("New Secure Note") { session.newItemRequest = .note }
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                Button("New Card") { session.newItemRequest = .card }
+                    .keyboardShortcut("n", modifiers: [.command, .option])
+            }
             CommandMenu("Vault") {
-                Button("Lock Vault") { KeysRuntime.session?.lock() }
-                    .keyboardShortcut("L", modifiers: [.command, .shift])
+                Button("Lock Vault") { session.lock() }
+                    .keyboardShortcut("l", modifiers: [.command, .shift])
+                Button("Sync Now") { Task { await session.syncNow() } }
+                    .keyboardShortcut("r")
+                Divider()
+                Button("Find in Keys") { session.searchRequest = "" }
+                    .keyboardShortcut("f")
             }
         }
+        #endif
+
+        #if os(macOS)
+        Settings {
+            SettingsView()
+                .environment(session)
+                .environment(preferences)
+        }
+        #endif
     }
 }
 

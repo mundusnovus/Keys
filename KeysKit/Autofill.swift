@@ -58,7 +58,7 @@ final class AutofillModel {
     func biometric() async {
         let context = LAContext()
         context.localizedReason = "Unlock Keys"
-        guard let opened = DeviceKey.load(context: context), let file = VaultDisk.read() else {
+        guard let opened = try? DeviceKey.load(context: context), let file = VaultDisk.read() else {
             message = "Use the master password on this device once."
             return
         }
@@ -73,7 +73,7 @@ final class AutofillModel {
     func silentKey() -> Data? {
         let context = LAContext()
         context.interactionNotAllowed = true
-        return DeviceKey.load(context: context)
+        return try? DeviceKey.load(context: context)
     }
 
     @discardableResult

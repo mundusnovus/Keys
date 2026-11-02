@@ -14,12 +14,13 @@ struct CaptureDraft {
     var note: String
 }
 
+@MainActor
 enum CaptureService {
     static var available: Bool {
-        if case .available = SystemLanguageModel.default.availability { return true }
-        return false
+        KeysIntelligence.onDeviceStatus.isReady
     }
 
+    /// On the device only. A sentence a person types can contain a secret, so it never goes to a server.
     static func draft(from sentence: String) async throws -> CaptureDraft {
         let session = LanguageModelSession(instructions: CaptureCopy.instructions)
         let response = try await session.respond(to: sentence, generating: CaptureDraft.self)
@@ -29,7 +30,11 @@ enum CaptureService {
 
 struct CaptureSheet: View {
     var onSave: (VaultItem) -> Void
+    @Environment(VaultSession.self) private var session
+    @Environment(KeysPreferences.self) private var preferences
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var focus: Bool
+
     @State private var sentence = ""
     @State private var draft = CaptureDraft(title: "", site: "", username: "", note: "")
     @State private var password = ""
@@ -39,52 +44,105 @@ struct CaptureSheet: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                if !CaptureService.available {
-                    Section {
-                        Text("Apple Intelligence is off. You can still add an item yourself.")
-                            .font(.reading(.body))
+            ScrollView {
+                VStack(spacing: 16) {
+                    if !CaptureService.available {
+                        GlassCard {
+                            Label("Apple Intelligence is off", systemImage: "apple.intelligence")
+                                .font(.reading(.headline, weight: .semibold))
+                            Text("Turn on Apple Intelligence in Settings to draft a login from a sentence. You can still add one yourself.")
+                                .font(.reading(.callout))
+                                .foregroundStyle(.secondary)
+                        }
+                    } else if !reviewing {
+                        GlassCard {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Label("Describe the login", systemImage: "apple.intelligence")
+                                    .font(.reading(.headline, weight: .semibold))
+                                TextField("For example: my work email at mail.example.com, username ada", text: $sentence, axis: .vertical)
+                                    .font(.reading(.body))
+                                    .lineLimit(3...6)
+                                    .focused($focus)
+                                    .textFieldStyle(.plain)
+                                    .padding(12)
+                                    .background(.quaternary.opacity(0.3), in: .rect(cornerRadius: 12))
+                                Text("Leave the password out. Capture runs on this device and never sees your vault.")
+                                    .font(.reading(.footnote))
+                                    .foregroundStyle(.secondary)
+                                Button {
+                                    Task { await generate() }
+                                } label: {
+                                    Label("Draft with Apple Intelligence", systemImage: "sparkles")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.glassProminent)
+                                .controlSize(.large)
+                                .disabled(sentence.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || working)
+                            }
+                        }
+                    } else {
+                        GlassCard {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Review before saving").font(.reading(.headline, weight: .semibold))
+                                Text("Apple Intelligence suggested these fields. Check them, then add the password yourself.")
+                                    .font(.reading(.callout))
+                                    .foregroundStyle(.secondary)
+                                TextField("Title", text: $draft.title)
+                                    .textFieldStyle(.plain)
+                                    .padding(12)
+                                    .background(.quaternary.opacity(0.3), in: .rect(cornerRadius: 12))
+                                TextField("Website", text: $draft.site)
+                                    .textFieldStyle(.plain)
+                                    .padding(12)
+                                    .background(.quaternary.opacity(0.3), in: .rect(cornerRadius: 12))
+                                TextField("Username", text: $draft.username)
+                                    .textFieldStyle(.plain)
+                                    .padding(12)
+                                    .background(.quaternary.opacity(0.3), in: .rect(cornerRadius: 12))
+                                SecureField("Password", text: $password)
+                                    .textFieldStyle(.plain)
+                                    .padding(12)
+                                    .background(.quaternary.opacity(0.3), in: .rect(cornerRadius: 12))
+                                TextField("Note", text: $draft.note, axis: .vertical)
+                                    .textFieldStyle(.plain)
+                                    .lineLimit(2...5)
+                                    .padding(12)
+                                    .background(.quaternary.opacity(0.3), in: .rect(cornerRadius: 12))
+                                Button {
+                                    save()
+                                } label: {
+                                    Label("Save login", systemImage: "checkmark")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.glassProminent)
+                                .controlSize(.large)
+                                .disabled(draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && password.isEmpty)
+                                Button("Start over") {
+                                    reviewing = false
+                                    message = ""
+                                }
+                                .font(.reading(.subheadline))
+                                .buttonStyle(.borderless)
+                            }
+                        }
                     }
-                } else if !reviewing {
-                    Section {
-                        TextField("Describe the login. Leave the password out.", text: $sentence, axis: .vertical)
-                            .font(.reading(.body))
-                            .lineLimit(3...6)
-                    } footer: {
-                        Text("This stays on your device. The model never sees the vault.")
-                            .font(.reading(.footnote))
-                    }
-                } else {
-                    Section("Review") {
-                        TextField("Title", text: $draft.title)
-                        TextField("Website", text: $draft.site)
-                        TextField("Username", text: $draft.username)
-                        SecureField("Password", text: $password)
-                        TextField("Note", text: $draft.note, axis: .vertical)
-                            .lineLimit(2...5)
+                    if !message.isEmpty {
+                        Text(message).font(.reading(.footnote)).foregroundStyle(Palette.alert)
                     }
                 }
-                if !message.isEmpty {
-                    Text(message).font(.reading(.footnote)).foregroundStyle(.secondary)
-                }
+                .padding(20)
+                .frame(maxWidth: 560)
+                .frame(maxWidth: .infinity)
             }
             .navigationTitle("Capture")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    if reviewing {
-                        Button("Save", action: save)
-                            .disabled(draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && password.isEmpty)
-                    } else {
-                        Button("Draft") { Task { await generate() } }
-                            .disabled(!CaptureService.available || sentence.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || working)
-                    }
-                }
             }
+            .onAppear { focus = true }
         }
-        .tint(.asteriaAccent)
+        .tint(preferences.accent.color)
     }
 
     private func generate() async {
@@ -95,7 +153,7 @@ struct CaptureSheet: View {
             draft = try await CaptureService.draft(from: sentence)
             reviewing = true
         } catch {
-            message = "Apple Intelligence could not draft that. You can add the item yourself."
+            message = KeysIntelligence.message(for: error)
         }
     }
 

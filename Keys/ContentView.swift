@@ -1,16 +1,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var session: VaultSession
-
-    init() {
-        _session = State(initialValue: VaultSession())
-    }
+    let session: VaultSession
+    let preferences: KeysPreferences
 
     var body: some View {
-        let _ = KeysRuntime.attach(session)
         VaultRoot()
             .environment(session)
-            .task { await session.start() }
+            .environment(preferences)
+            .onContinueUserActivity(KeysActivity.type) { activity in
+                guard let raw = activity.userInfo?["id"] as? String,
+                      let id = UUID(uuidString: raw) else { return }
+                session.openItemID = id
+            }
+            .onOpenURL { url in
+                guard url.scheme == "keys",
+                      let id = UUID(uuidString: url.lastPathComponent) else { return }
+                session.openItemID = id
+            }
     }
 }

@@ -21,5 +21,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.authentication-services-credential-provider-ui</string>
 	</dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Keys uses Face ID to unlock your vault.</string>
 </dict>
 </plist>

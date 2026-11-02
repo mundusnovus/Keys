@@ -9,6 +9,7 @@ enum VaultError: Error, LocalizedError, Equatable {
     case weakPassword
     case encryptedImport
     case unavailable
+    case keychain(OSStatus)
 
     var errorDescription: String? {
         switch self {
@@ -18,6 +19,19 @@ enum VaultError: Error, LocalizedError, Equatable {
         case .weakPassword: "Use at least 12 characters."
         case .encryptedImport: "That export is still encrypted. Export an unencrypted JSON file, then import it."
         case .unavailable: "The vault is not on this device yet."
+        case .keychain(let status):
+            switch status {
+            case errSecMissingEntitlement:
+                "Face ID could not be turned on because the keychain group is not available to this build."
+            case errSecAuthFailed, errSecUserCanceled:
+                "Face ID was cancelled."
+            case errSecInteractionNotAllowed:
+                "The device needs to be unlocked first."
+            case errSecItemNotFound:
+                "Turn on Face ID after unlocking with your master password once."
+            default:
+                "The keychain could not save the unlock key (error \(status))."
+            }
         }
     }
 }
@@ -27,6 +41,8 @@ struct VaultHeader: Codable, Sendable, Equatable {
     var iterations: Int
     var wrappedKey: Data
     var recoveryWrap: Data
+    /// When the wrapped key last changed. Optional so vaults written by 1.x still decode.
+    var revised: Date? = nil
 }
 
 enum VaultCrypto {
@@ -75,7 +91,8 @@ enum VaultCrypto {
             salt: salt,
             iterations: iterations,
             wrappedKey: try seal(key, key: stretched),
-            recoveryWrap: try seal(key, key: SymmetricKey(data: recovery))
+            recoveryWrap: try seal(key, key: SymmetricKey(data: recovery)),
+            revised: .now
         )
         return (header, key, recovery)
     }
@@ -97,7 +114,8 @@ enum VaultCrypto {
             salt: salt,
             iterations: iterations,
             wrappedKey: try seal(key, key: stretched),
-            recoveryWrap: recoveryWrap
+            recoveryWrap: recoveryWrap,
+            revised: .now
         )
     }
 
