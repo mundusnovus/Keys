@@ -32,6 +32,10 @@ struct VaultRoot: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .font(.reading(.body))
         .tint(preferences.accent.color)
+        .environment(\.keysGlass, preferences.glass)
+        #if DEBUG
+        .preferredColorScheme(ProcessInfo.processInfo.arguments.contains("dark") ? .dark : nil)
+        #endif
         .background {
             LinearGradient(colors: [Palette.sea.opacity(0.10), Palette.gold.opacity(0.05), .clear],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -79,7 +83,7 @@ struct LockView: View {
                     Wordmark(size: 40)
                     Text("Your vault, only yours.").font(.reading(.subheadline)).foregroundStyle(.secondary)
                 }
-                GlassCard {
+                GlassCard(tint: Palette.sea) {
                     VStack(spacing: 14) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Master password").font(.reading(.caption, weight: .semibold)).foregroundStyle(.secondary)
@@ -156,11 +160,19 @@ struct LockView: View {
             .padding(24)
             .frame(maxWidth: .infinity)
         }
+        .scrollDismissesKeyboard(.interactively)
         .onAppear {
             focus = true
             guard !triedBiometrics, session.biometricsEnabled, session.biometricsAvailable else { return }
             triedBiometrics = true
             Task { await session.unlockBiometric() }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Unlock") { Task { await session.unlock() } }
+                    .disabled(session.working || session.password.isEmpty)
+            }
         }
         .sheet(isPresented: $showRecovery) {
             RecoveryUnlockView()
@@ -208,7 +220,13 @@ struct SetupView: View {
     @Environment(VaultSession.self) private var session
     @State private var confirm = ""
     @State private var reveal = false
-    @FocusState private var focus: Bool
+    @FocusState private var focus: Field?
+
+    private enum Field: Hashable { case password, confirm }
+
+    private var canCreate: Bool {
+        !session.working && session.password.count >= VaultCrypto.minimumPasswordLength && !confirm.isEmpty
+    }
 
     var body: some View {
         @Bindable var session = session
@@ -223,7 +241,7 @@ struct SetupView: View {
                         .multilineTextAlignment(.center)
                 }
 
-                GlassCard {
+                GlassCard(tint: Palette.sea) {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Create your vault").font(.reading(.title2, weight: .semibold))
                         Text("Choose a master password. It wraps the key to everything in Keys, and only you know it.")
@@ -241,7 +259,9 @@ struct SetupView: View {
                                     }
                                 }
                                 .textFieldStyle(.plain)
-                                .focused($focus)
+                                .focused($focus, equals: .password)
+                                .submitLabel(.next)
+                                .onSubmit { focus = .confirm }
                                 .accessibilityLabel("Master password")
                                 Button {
                                     reveal.toggle()
@@ -264,22 +284,27 @@ struct SetupView: View {
                                 .textFieldStyle(.plain)
                                 .padding(12)
                                 .background(.quaternary.opacity(0.35), in: .rect(cornerRadius: 12))
+                                .focused($focus, equals: .confirm)
+                                .submitLabel(.go)
+                                .onSubmit { create() }
                                 .accessibilityLabel("Confirm master password")
                         }
 
+                        #if os(macOS)
                         Button {
-                            Task { await session.create(password: session.password, confirm: confirm) }
+                            create()
                         } label: {
                             Label("Create vault", systemImage: "checkmark.shield")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.glassProminent)
                         .controlSize(.large)
-                        .disabled(session.working || session.password.count < 12 || confirm.isEmpty)
+                        .disabled(!canCreate)
 
                         if !session.message.isEmpty {
                             Text(session.message).font(.reading(.footnote)).foregroundStyle(Palette.alert)
                         }
+                        #endif
                     }
                 }
                 .frame(maxWidth: 460)
@@ -287,12 +312,69 @@ struct SetupView: View {
                 Label("A recovery key comes next. It is shown once.", systemImage: "key.horizontal")
                     .font(.reading(.footnote))
                     .foregroundStyle(.secondary)
+                #if os(iOS)
+                if let iCloudNote {
+                    Text(iCloudNote)
+                        .font(.reading(.footnote))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                #endif
                 Spacer(minLength: 24)
             }
             .padding(24)
             .frame(maxWidth: .infinity)
         }
-        .onAppear { focus = true }
+        .scrollDismissesKeyboard(.interactively)
+        .onAppear { focus = .password }
+        #if os(iOS)
+        .safeAreaInset(edge: .bottom) { setupActionBar }
+        #endif
+    }
+
+    #if os(iOS)
+    /// Information, not an error. The iCloud note belongs in the page, not in the action bar.
+    private var iCloudNote: String? {
+        let text = session.message
+        return text.hasPrefix("iCloud is not available") ? text : nil
+    }
+
+    private var actionMessage: String? {
+        let text = session.message
+        guard !text.isEmpty, !text.hasPrefix("iCloud is not available") else { return nil }
+        return text
+    }
+
+    /// The primary action stays above the keyboard. Putting it inside the card let the keyboard hide
+    /// the only way forward on a first run.
+    private var setupActionBar: some View {
+        VStack(spacing: 8) {
+            if let actionMessage {
+                Text(actionMessage)
+                    .font(.reading(.footnote))
+                    .foregroundStyle(Palette.alert)
+                    .multilineTextAlignment(.center)
+            }
+            Button {
+                create()
+            } label: {
+                Label("Create vault", systemImage: "checkmark.shield")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.glassProminent)
+            .controlSize(.large)
+            .disabled(!canCreate)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
+        .background(.bar)
+    }
+    #endif
+
+    private func create() {
+        guard canCreate else { return }
+        focus = nil
+        Task { await session.create(password: session.password, confirm: confirm) }
     }
 }
 
@@ -301,12 +383,14 @@ private struct StrengthMeter: View {
 
     private var score: Int {
         guard !password.isEmpty else { return 0 }
-        var value = min(4, password.count / 5)
-        if password.rangeOfCharacter(from: .uppercaseLetters) != nil { value += 1 }
-        if password.rangeOfCharacter(from: .lowercaseLetters) != nil { value += 1 }
-        if password.rangeOfCharacter(from: .decimalDigits) != nil { value += 1 }
-        if password.rangeOfCharacter(from: .punctuationCharacters.union(.symbols)) != nil { value += 1 }
-        return min(4, value)
+        guard password.count >= VaultCrypto.minimumPasswordLength else { return 1 }
+        var variety = 0
+        if password.rangeOfCharacter(from: .uppercaseLetters) != nil { variety += 1 }
+        if password.rangeOfCharacter(from: .lowercaseLetters) != nil { variety += 1 }
+        if password.rangeOfCharacter(from: .decimalDigits) != nil { variety += 1 }
+        if password.rangeOfCharacter(from: .punctuationCharacters.union(.symbols)) != nil { variety += 1 }
+        if password.count >= 16, variety >= 3 { return 4 }
+        return variety >= 2 ? 3 : 2
     }
 
     private var label: String {
@@ -321,7 +405,8 @@ private struct StrengthMeter: View {
 
     private var tint: Color {
         switch score {
-        case 0, 1: Palette.alert
+        case 0: .secondary
+        case 1: Palette.alert
         case 2: Palette.gold
         default: Palette.pass
         }

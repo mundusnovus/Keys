@@ -83,12 +83,25 @@ final class CloudSync {
     private(set) var pendingUploads = 0
     private(set) var pendingDeletes = 0
 
-    private let container = CKContainer(identifier: VaultDisk.containerID)
-    private var database: CKDatabase { container.privateCloudDatabase }
+    /// A build without the iCloud entitlement must never construct a `CKContainer`: CloudKit traps on a
+    /// background queue and no `do/catch` can stop it. `ASTERIA_CLOUDKIT=NO` keeps unsigned builds alive.
+    private let container: CKContainer?
+    private var database: CKDatabase? { container?.privateCloudDatabase }
     private let zoneID = CKRecordZone.ID(zoneName: VaultDisk.zoneName, ownerName: CKCurrentUserDefaultName)
     private let headerName = "header"
     private var inFlight = false
     private var zoneReady = false
+
+    init() {
+        container = CloudSync.isAllowed ? CKContainer(identifier: VaultDisk.containerID) : nil
+    }
+
+    nonisolated static var isAllowed: Bool {
+        if ProcessInfo.processInfo.arguments.contains("-no-cloud") { return false }
+        return (Bundle.main.object(forInfoDictionaryKey: "ASTERIA_CLOUDKIT") as? String) != "NO"
+    }
+
+    var isEnabled: Bool { container != nil }
 
     var containerIdentifier: String { VaultDisk.containerID }
     var environment: String {
@@ -121,12 +134,23 @@ final class CloudSync {
         lastError = nil
     }
 
+    /// Forget the CloudKit change token so the next sync fetches every record.
+    /// Used on a new device, after an erase, and by "Sync Everything Again".
+    func resetToken() {
+        var state = loadState()
+        state.token = nil
+        save(state)
+        zoneReady = false
+    }
+
     func accountStatus() async -> CKAccountStatus {
-        (try? await container.accountStatus()) ?? .couldNotDetermine
+        guard let container else { return .couldNotDetermine }
+        return (try? await container.accountStatus()) ?? .couldNotDetermine
     }
 
     func accountExplanation() async -> String {
-        switch await accountStatus() {
+        guard isEnabled else { return "iCloud is off for this build" }
+        return switch await accountStatus() {
         case .available: "Signed in to iCloud"
         case .noAccount: "Not signed in to iCloud"
         case .restricted: "iCloud is restricted on this device"
@@ -137,6 +161,7 @@ final class CloudSync {
     }
 
     func lookupHeader() async -> HeaderLookup {
+        guard isEnabled else { return .unavailable }
         guard await accountAvailable() else { return .unavailable }
         return await withTaskGroup(of: HeaderLookup.self) { group in
             group.addTask { @MainActor in
@@ -167,6 +192,12 @@ final class CloudSync {
     }
 
     func sync(key: Data?) async -> SyncReport {
+        guard isEnabled else {
+            phase = .unavailable
+            lastError = "iCloud is off for this build."
+            lastMessage = "iCloud is off for this build."
+            return .offline(lastMessage)
+        }
         guard !isPaused() else {
             phase = .paused
             return .paused
@@ -224,18 +255,21 @@ final class CloudSync {
     // MARK: - Account and zones
 
     private func accountAvailable() async -> Bool {
-        (try? await container.accountStatus()) == .available
+        guard let container else { return false }
+        return (try? await container.accountStatus()) == .available
     }
 
     private func ensureZone() async throws {
         guard !zoneReady else { return }
+        guard let database else { throw VaultError.unavailable }
         _ = try await withRetry {
-            try await self.database.modifyRecordZones(saving: [CKRecordZone(zoneID: self.zoneID)], deleting: [])
+            try await database.modifyRecordZones(saving: [CKRecordZone(zoneID: self.zoneID)], deleting: [])
         }
         zoneReady = true
     }
 
     private func ensureSubscription() async throws {
+        guard let database else { throw VaultError.unavailable }
         let subscription = CKRecordZoneSubscription(zoneID: zoneID, subscriptionID: "keys-vault")
         let info = CKSubscription.NotificationInfo()
         info.shouldSendContentAvailable = true
@@ -245,6 +279,7 @@ final class CloudSync {
 
     func fetchHeader() async throws -> VaultHeader? {
         try await ensureZone()
+        guard let database else { throw VaultError.unavailable }
         let id = CKRecord.ID(recordName: headerName, zoneID: zoneID)
         do {
             let record = try await database.record(for: id)
@@ -257,6 +292,7 @@ final class CloudSync {
     // MARK: - Pull
 
     private func pull(key: Data?) async throws -> Bool {
+        guard let database else { throw VaultError.unavailable }
         var state = loadState()
         var token = state.token.flatMap { data in
             try? NSKeyedUnarchiver.unarchivedObject(ofClass: CKServerChangeToken.self, from: data)
@@ -306,7 +342,7 @@ final class CloudSync {
                 try VaultDisk.write(created)
                 return false
             }
-            if file.header.salt != remote.salt { throw SyncProblem.mismatch }
+            if !file.header.isSameVault(as: remote) { throw SyncProblem.mismatch }
             file.headerSystemFields = RecordCoding.fields(of: record)
             let remoteIsNewer = (remote.revised ?? .distantPast) > (file.header.revised ?? .distantPast)
             if file.headerNeedsUpload {
@@ -381,9 +417,13 @@ final class CloudSync {
 
     private func applyDeletion(_ name: String) throws {
         guard name != headerName, let id = UUID(uuidString: name) else { return }
+        let cutoff = lastSync ?? .distantPast
         try VaultDisk.update { file in
             guard let index = file.records.firstIndex(where: { $0.id == id }) else { return }
-            if file.records[index].needsUpload { return }
+            let local = file.records[index]
+            // A local edit made after the last successful sync is newer than the deletion we just learned
+            // about. Keep it and let the next push restore it. Otherwise the other device's delete wins.
+            if local.needsUpload, local.revision > cutoff { return }
             file.records.remove(at: index)
         }
     }
@@ -391,6 +431,7 @@ final class CloudSync {
     // MARK: - Push
 
     private func push(key: Data?) async throws {
+        guard let database else { throw VaultError.unavailable }
         guard let file = VaultDisk.read() else { return }
         var saving: [CKRecord] = []
         var deleting: [CKRecord.ID] = []
@@ -401,6 +442,7 @@ final class CloudSync {
             record["iterations"] = file.header.iterations
             record["wrappedKey"] = file.header.wrappedKey
             record["recoveryWrap"] = file.header.recoveryWrap
+            record["vaultID"] = file.header.effectiveID
             record["revised"] = file.header.revised ?? .now
             saving.append(record)
             uploaded[headerName] = file.header.wrappedKey
@@ -502,7 +544,7 @@ final class CloudSync {
     private func mergeConflict(_ server: CKRecord, key: Data?, file: inout VaultFile) -> Bool {
         guard let key else { return false }
         if server.recordID.recordName == headerName, let remote = header(from: server) {
-            if file.header.salt != remote.salt { return false }
+            if !file.header.isSameVault(as: remote) { return false }
             file.headerSystemFields = RecordCoding.fields(of: server)
             let remoteIsNewer = (remote.revised ?? .distantPast) > (file.header.revised ?? .distantPast)
             if remoteIsNewer, file.header.wrappedKey != remote.wrappedKey {
@@ -553,8 +595,10 @@ final class CloudSync {
               let wrappedKey = record["wrappedKey"] as? Data,
               let recoveryWrap = record["recoveryWrap"] as? Data else { return nil }
         let iterations = (record["iterations"] as? NSNumber)?.intValue ?? VaultCrypto.iterations
+        let vaultID = record["vaultID"] as? String
         return VaultHeader(salt: salt, iterations: iterations, wrappedKey: wrappedKey,
-                           recoveryWrap: recoveryWrap, revised: record["revised"] as? Date)
+                           recoveryWrap: recoveryWrap, vaultID: vaultID,
+                           revised: record["revised"] as? Date)
     }
 
     private func withRetry<T>(_ body: () async throws -> T) async throws -> T {

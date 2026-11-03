@@ -165,14 +165,30 @@ struct Wordmark: View {
             Text("Asteria").font(.asteria(size))
             Text(product).font(.system(size: size * 0.82, weight: .semibold)).foregroundStyle(.secondary)
         }
+        .lineLimit(1)
+        .fixedSize(horizontal: true, vertical: false)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Asteria \(product)")
         .accessibilityAddTraits(.isHeader)
     }
 }
 
+/// The person's Liquid Glass choice, set once at the root. A view that draws glass reads this rather than
+/// hard-coding `.regular`, so the Settings picker changes something real.
+private struct KeysGlassStyleKey: EnvironmentKey {
+    static let defaultValue: Glass = .regular
+}
+
+extension EnvironmentValues {
+    var keysGlass: Glass {
+        get { self[KeysGlassStyleKey.self] }
+        set { self[KeysGlassStyleKey.self] = newValue }
+    }
+}
+
 /// A frosted card, the Food and Mood surface. Use for grouped content that floats over the page, not every row.
 struct GlassCard<Content: View>: View {
+    @Environment(\.keysGlass) private var glass
     var tint: Color?
     var padding: CGFloat = 18
     @ViewBuilder var content: Content
@@ -181,7 +197,7 @@ struct GlassCard<Content: View>: View {
         content
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassEffect(tint.map { .regular.tint($0.opacity(0.18)) } ?? .regular, in: .rect(cornerRadius: 22))
+            .glassEffect(tint.map { glass.tint($0.opacity(0.18)) } ?? glass, in: .rect(cornerRadius: 22))
     }
 }
 

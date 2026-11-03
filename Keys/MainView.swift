@@ -12,8 +12,10 @@ struct MainView: View {
     @State private var showSettings = false
     @State private var settingsPane: SettingsPane = .general
     @State private var newKind: ItemKind?
+    @State private var composeItem: VaultItem?
     @State private var showGenerator = false
     @State private var showCapture = false
+    @State private var captureSeed = ""
 
     var body: some View {
         NavigationSplitView(columnVisibility: $visibility, preferredCompactColumn: $preferredColumn) {
@@ -64,28 +66,38 @@ struct MainView: View {
             newKind = kind
             session.newItemRequest = nil
         }
+        .onChange(of: session.composeRequest) { _, request in
+            guard let request else { return }
+            session.composeRequest = nil
+            present(request)
+        }
+        .onChange(of: session.captureRequest) { _, sentence in
+            guard let sentence, !sentence.isEmpty else { return }
+            session.captureRequest = nil
+            captureSeed = sentence
+            showCapture = true
+        }
         .onChange(of: session.needsPasswordReset) { _, needs in
             if needs { showReset = true }
         }
         .sheet(item: $newKind) { kind in
             ItemEditorView(item: VaultItem(kind: kind), isNew: true) { item in
-                session.save(item)
-                destination = .all
-                preferredColumn = .detail
-                path = NavigationPath()
-                path.append(item.id)
+                saved(item)
+            }
+        }
+        .sheet(item: $composeItem) { item in
+            ItemEditorView(item: item, isNew: true) { saved in
+                session.save(saved)
+                open(saved)
             }
         }
         .sheet(isPresented: $showGenerator) {
             GeneratorSheet()
         }
         .sheet(isPresented: $showCapture) {
-            CaptureSheet { item in
+            CaptureSheet(initialSentence: captureSeed) { item in
                 session.save(item)
-                destination = .all
-                preferredColumn = .detail
-                path = NavigationPath()
-                path.append(item.id)
+                open(item)
             }
         }
         .sheet(isPresented: $showSettings) {
@@ -99,6 +111,15 @@ struct MainView: View {
             if let kind = session.newItemRequest {
                 newKind = kind
                 session.newItemRequest = nil
+            }
+            if let request = session.composeRequest {
+                session.composeRequest = nil
+                present(request)
+            }
+            if let sentence = session.captureRequest, !sentence.isEmpty {
+                session.captureRequest = nil
+                captureSeed = sentence
+                showCapture = true
             }
             if let id = session.openItemID {
                 session.openItemID = nil
@@ -114,6 +135,34 @@ struct MainView: View {
                 preferredColumn = .detail
             }
         }
+    }
+
+    /// A Siri AI compose request becomes an ordinary new item. The password is made on this device and
+    /// shown in the editor; nothing secret was spoken or sent to a server.
+    private func present(_ request: ComposeRequest) {
+        var item = VaultItem(kind: request.kind)
+        item.title = request.title
+        item.username = request.username
+        item.notes = request.note
+        if !request.site.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            item.uris = [request.site]
+        }
+        if request.generatePassword, (item.kind == .login || item.kind == .password) {
+            item.password = PasswordGenerator.password()
+        }
+        composeItem = item
+    }
+
+    private func saved(_ item: VaultItem) {
+        session.save(item)
+        open(item)
+    }
+
+    private func open(_ item: VaultItem) {
+        destination = .all
+        preferredColumn = .detail
+        path = NavigationPath()
+        path.append(item.id)
     }
 
     @State private var showReset = false
@@ -212,36 +261,49 @@ struct SidebarView: View {
         .tag(value)
     }
 
+    @ViewBuilder
     private var syncFooter: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Image(systemName: session.syncPhase.symbol)
-                    .symbol()
-                    .foregroundStyle(session.syncPhase == .failed ? Palette.alert : Color.secondary)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(session.syncPhase.label).font(.reading(.caption, weight: .medium))
-                    if let last = session.lastSync {
-                        Text(last, style: .relative).font(.reading(.caption2)).foregroundStyle(.secondary)
-                    } else {
-                        Text(session.syncMessage).font(.reading(.caption2)).foregroundStyle(.secondary).lineLimit(1)
+        if session.demoMode {
+            Label("Demo vault", systemImage: "sparkles")
+                .font(.reading(.caption, weight: .medium))
+                .foregroundStyle(.secondary)
+                .padding(.vertical, 4)
+        } else if !session.syncAvailable {
+            Label("iCloud is off for this build", systemImage: "icloud.slash")
+                .font(.reading(.caption, weight: .medium))
+                .foregroundStyle(.secondary)
+                .padding(.vertical, 4)
+        } else {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: session.syncPhase.symbol)
+                        .symbol()
+                        .foregroundStyle(session.syncPhase == .failed ? Palette.alert : Color.secondary)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(session.syncPhase.label).font(.reading(.caption, weight: .medium))
+                        if let last = session.lastSync {
+                            Text(last, style: .relative).font(.reading(.caption2)).foregroundStyle(.secondary)
+                        } else {
+                            Text(session.syncMessage).font(.reading(.caption2)).foregroundStyle(.secondary).lineLimit(1)
+                        }
+                    }
+                }
+                HStack(spacing: 6) {
+                    Button("Sync now") {
+                        Task { await session.syncNow() }
+                    }
+                    .buttonStyle(.glass)
+                    .controlSize(.small)
+                    .disabled(session.syncPhase == .syncing)
+                    if session.syncPhase == .paused {
+                        Button("Resume") { session.resumeSync() }
+                            .buttonStyle(.borderless)
+                            .font(.reading(.caption, weight: .medium))
                     }
                 }
             }
-            HStack(spacing: 6) {
-                Button("Sync now") {
-                    Task { await session.syncNow() }
-                }
-                .buttonStyle(.glass)
-                .controlSize(.small)
-                .disabled(session.syncPhase == .syncing)
-                if session.syncPhase == .paused {
-                    Button("Resume") { session.resumeSync() }
-                        .buttonStyle(.borderless)
-                        .font(.reading(.caption, weight: .medium))
-                }
-            }
+            .padding(.vertical, 4)
         }
-        .padding(.vertical, 4)
     }
 }
 

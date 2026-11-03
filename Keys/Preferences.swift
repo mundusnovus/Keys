@@ -77,11 +77,11 @@ final class KeysPreferences {
     }
 
     var autoLock: AutoLockDelay {
-        didSet { write("autoLock", String(autoLock.rawValue), cloud: true) }
+        didSet { write("autoLock", String(autoLock.rawValue)) }
     }
 
     var clipboardClear: ClipboardClear {
-        didSet { write("clipboardClear", String(clipboardClear.rawValue), cloud: true) }
+        didSet { write("clipboardClear", String(clipboardClear.rawValue)) }
     }
 
     var glassStyle: GlassStyle {
@@ -127,8 +127,8 @@ final class KeysPreferences {
     private init() {
         cloud.synchronize()
         accent = Self.accentChoice(cloud.string(forKey: "accent") ?? defaults.string(forKey: "accent"))
-        autoLock = AutoLockDelay(rawValue: Self.int(cloud, defaults, "autoLock", fallback: 60)) ?? .oneMinute
-        clipboardClear = ClipboardClear(rawValue: Self.int(cloud, defaults, "clipboardClear", fallback: 60)) ?? .oneMinute
+        autoLock = AutoLockDelay(rawValue: Int(defaults.string(forKey: "autoLock") ?? "") ?? 60) ?? .oneMinute
+        clipboardClear = ClipboardClear(rawValue: Int(defaults.string(forKey: "clipboardClear") ?? "") ?? 60) ?? .oneMinute
         glassStyle = GlassStyle(rawValue: cloud.string(forKey: "glassStyle") ?? defaults.string(forKey: "glassStyle") ?? "") ?? .frosted
         biometricsEnabled = defaults.bool(forKey: "biometricsEnabled")
         requireAuthToReveal = defaults.object(forKey: "requireAuthToReveal") as? Bool ?? false
@@ -153,12 +153,6 @@ final class KeysPreferences {
     private func readCloudChanges() {
         let newAccent = Self.accentChoice(cloud.string(forKey: "accent") ?? defaults.string(forKey: "accent"))
         if newAccent != accent { accent = newAccent }
-        if let value = AutoLockDelay(rawValue: Self.int(cloud, defaults, "autoLock", fallback: 60)), value != autoLock {
-            autoLock = value
-        }
-        if let value = ClipboardClear(rawValue: Self.int(cloud, defaults, "clipboardClear", fallback: 60)), value != clipboardClear {
-            clipboardClear = value
-        }
         if let raw = cloud.string(forKey: "glassStyle"), let value = GlassStyle(rawValue: raw), value != glassStyle {
             glassStyle = value
         }
@@ -167,13 +161,6 @@ final class KeysPreferences {
     private func write(_ key: String, _ value: String, cloud: Bool = false) {
         defaults.set(value, forKey: key)
         if cloud { self.cloud.set(value, forKey: key) }
-    }
-
-    private static func int(_ cloud: NSUbiquitousKeyValueStore, _ defaults: UserDefaults, _ key: String,
-                            fallback: Int) -> Int {
-        if let raw = cloud.string(forKey: key), let value = Int(raw) { return value }
-        if defaults.object(forKey: key) == nil { return fallback }
-        return defaults.integer(forKey: key)
     }
 
     private static func accentChoice(_ raw: String?) -> AccentChoice {

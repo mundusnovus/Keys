@@ -17,7 +17,7 @@ struct CaptureDraft {
 @MainActor
 enum CaptureService {
     static var available: Bool {
-        KeysIntelligence.onDeviceStatus.isReady
+        KeysIntelligence.isEnabled
     }
 
     /// On the device only. A sentence a person types can contain a secret, so it never goes to a server.
@@ -35,18 +35,31 @@ struct CaptureSheet: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focus: Bool
 
-    @State private var sentence = ""
+    @State private var sentence: String
     @State private var draft = CaptureDraft(title: "", site: "", username: "", note: "")
     @State private var password = ""
     @State private var reviewing = false
     @State private var working = false
     @State private var message = ""
 
+    init(initialSentence: String = "", onSave: @escaping (VaultItem) -> Void) {
+        self.onSave = onSave
+        _sentence = State(initialValue: initialSentence)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    if !CaptureService.available {
+                    if !preferences.captureEnabled {
+                        GlassCard {
+                            Label("Capture is off", systemImage: "apple.intelligence")
+                                .font(.reading(.headline, weight: .semibold))
+                            Text("Turn on Capture from a sentence in Settings to draft a login here. You can still add one yourself.")
+                                .font(.reading(.callout))
+                                .foregroundStyle(.secondary)
+                        }
+                    } else if !CaptureService.available {
                         GlassCard {
                             Label("Apple Intelligence is off", systemImage: "apple.intelligence")
                                 .font(.reading(.headline, weight: .semibold))
@@ -141,11 +154,25 @@ struct CaptureSheet: View {
                 }
             }
             .onAppear { focus = true }
+            .task {
+                // A sentence handed over by Siri AI is already here: draft it once, without another tap.
+                if !sentence.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !reviewing {
+                    await generate()
+                }
+            }
         }
         .tint(preferences.accent.color)
     }
 
     private func generate() async {
+        guard preferences.captureEnabled else {
+            message = "Capture is off. Turn it on in Settings, under Apple Intelligence."
+            return
+        }
+        guard CaptureService.available else {
+            message = KeysIntelligence.onDeviceStatus.explanation
+            return
+        }
         working = true
         message = ""
         defer { working = false }

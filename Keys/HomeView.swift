@@ -42,6 +42,15 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
         }
         .navigationTitle("Home")
+        #if os(iOS)
+        // The Asteria wordmark is the page header; a large navigation title would repeat it.
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+        .onAppear { showSiriTip = preferences.showSiriTip }
+        .onChange(of: showSiriTip) { _, visible in
+            // Dismissing the tip is a real choice; remember it instead of showing it again next launch.
+            if preferences.showSiriTip != visible { preferences.showSiriTip = visible }
+        }
         .sheet(isPresented: $showCoach) {
             SecurityCoachView()
         }
@@ -99,10 +108,12 @@ struct HomeView: View {
                         Button("Review") { onNavigate(.health) }
                             .buttonStyle(.glass)
                             .controlSize(.small)
-                        Button("Ask Apple Intelligence") { showCoach = true }
+                        Button("Ask Coach") { showCoach = true }
                             .buttonStyle(.borderless)
                             .font(.reading(.caption, weight: .medium))
-                            .disabled(!preferences.intelligenceEnabled || !KeysIntelligence.onDeviceStatus.isReady)
+                            .lineLimit(1)
+                            .accessibilityLabel("Ask Apple Intelligence for a security briefing")
+                            .disabled(!preferences.intelligenceEnabled || !preferences.securityCoachEnabled || !KeysIntelligence.onDeviceStatus.isReady)
                     }
                 }
                 Spacer(minLength: 0)
@@ -112,14 +123,16 @@ struct HomeView: View {
 
     private var quickActions: some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionHeader(title: "Quick actions", subtitle: "The four things people do most")
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+            SectionHeader(title: "Quick actions", subtitle: "The things people do most")
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
                 QuickAction(title: "New Login", subtitle: "Site, username, password", symbol: "key.fill",
                             tint: Palette.sea) { onNew(.login) }
                 QuickAction(title: "Generate", subtitle: "A strong password", symbol: "wand.and.stars",
                             tint: Palette.gold) { onGenerator() }
-                QuickAction(title: "Capture", subtitle: "Draft from a sentence", symbol: "apple.intelligence",
-                            tint: Color(light: 0x6A43B5, dark: 0xAE8CF0)) { onCapture() }
+                if preferences.captureEnabled {
+                    QuickAction(title: "Capture", subtitle: "Draft from a sentence", symbol: "apple.intelligence",
+                                tint: Color(light: 0x6A43B5, dark: 0xAE8CF0)) { onCapture() }
+                }
                 QuickAction(title: "Security", subtitle: "Review weak passwords", symbol: "checkmark.shield",
                             tint: Palette.pass) { onNavigate(.health) }
             }
@@ -145,6 +158,7 @@ struct HomeView: View {
                                 .contentShape(.rect)
                         }
                         .buttonStyle(.plain)
+                        .appEntityIdentifier(EntityIdentifier(for: VaultItemEntity.self, identifier: item.id.uuidString))
                         if index < session.recents.count - 1 {
                             Divider().padding(.leading, 58)
                         }
@@ -154,36 +168,52 @@ struct HomeView: View {
         }
     }
 
+    @ViewBuilder
     private var syncCard: some View {
-        GlassCard {
-            HStack(alignment: .top, spacing: 14) {
-                IconTile(symbol: session.syncPhase.symbol,
-                         color: session.syncPhase == .failed ? Palette.alert : Palette.sea)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(session.syncPhase.label).font(.reading(.headline, weight: .semibold))
-                    Text(session.syncMessage).font(.reading(.footnote)).foregroundStyle(.secondary)
-                    if let error = session.syncError, !error.isEmpty {
-                        Text(error).font(.reading(.footnote)).foregroundStyle(Palette.alert)
+        if session.demoMode {
+            GlassCard {
+                HStack(alignment: .top, spacing: 14) {
+                    IconTile(symbol: "sparkles", color: Palette.sea)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Demo vault").font(.reading(.headline, weight: .semibold))
+                        Text("iCloud and sync are off for this run. Everything else works as it does in the shipping app.")
+                            .font(.reading(.footnote))
+                            .foregroundStyle(.secondary)
                     }
-                    if session.pendingUploads > 0 {
-                        Text("\(session.pendingUploads) waiting to upload")
-                            .font(.reading(.caption)).foregroundStyle(.secondary)
-                    }
-                    if let last = session.lastSync {
-                        Text("Last sync \(last.formatted(date: .abbreviated, time: .shortened))")
-                            .font(.reading(.caption)).foregroundStyle(.tertiary)
-                    }
+                    Spacer(minLength: 0)
                 }
-                Spacer(minLength: 8)
-                Button {
-                    Task { await session.syncNow() }
-                } label: {
-                    Image(systemName: "arrow.clockwise").symbol()
+            }
+        } else {
+            GlassCard {
+                HStack(alignment: .top, spacing: 14) {
+                    IconTile(symbol: session.syncPhase.symbol,
+                             color: session.syncPhase == .failed ? Palette.alert : Palette.sea)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(session.syncPhase.label).font(.reading(.headline, weight: .semibold))
+                        Text(session.syncMessage).font(.reading(.footnote)).foregroundStyle(.secondary)
+                        if let error = session.syncError, !error.isEmpty {
+                            Text(error).font(.reading(.footnote)).foregroundStyle(Palette.alert)
+                        }
+                        if session.pendingUploads > 0 {
+                            Text("\(session.pendingUploads) waiting to upload")
+                                .font(.reading(.caption)).foregroundStyle(.secondary)
+                        }
+                        if let last = session.lastSync {
+                            Text("Last sync \(last.formatted(date: .abbreviated, time: .shortened))")
+                                .font(.reading(.caption)).foregroundStyle(.tertiary)
+                        }
+                    }
+                    Spacer(minLength: 8)
+                    Button {
+                        Task { await session.syncNow() }
+                    } label: {
+                        Image(systemName: "arrow.clockwise").symbol()
+                    }
+                    .buttonStyle(.glass)
+                    .controlSize(.small)
+                    .disabled(session.syncPhase == .syncing)
+                    .accessibilityLabel("Sync now")
                 }
-                .buttonStyle(.glass)
-                .controlSize(.small)
-                .disabled(session.syncPhase == .syncing)
-                .accessibilityLabel("Sync now")
             }
         }
     }
@@ -211,7 +241,7 @@ struct HomeView: View {
                         Label("Security coach", systemImage: "sparkles")
                     }
                     .buttonStyle(.glass)
-                    .disabled(!preferences.intelligenceEnabled || !KeysIntelligence.onDeviceStatus.isReady)
+                    .disabled(!preferences.intelligenceEnabled || !preferences.securityCoachEnabled || !KeysIntelligence.onDeviceStatus.isReady)
                     Button("Settings") { onSettings() }
                         .buttonStyle(.borderless)
                         .font(.reading(.subheadline, weight: .medium))

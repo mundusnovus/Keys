@@ -79,7 +79,8 @@ struct SecurityCoachView: View {
                             Label(advice == nil ? "Get a briefing" : "Regenerate", systemImage: "sparkles")
                         }
                         .buttonStyle(.glassProminent)
-                        .disabled(working || !preferences.intelligenceEnabled || !KeysIntelligence.onDeviceStatus.isReady)
+                        .disabled(working || !preferences.intelligenceEnabled || !preferences.securityCoachEnabled
+                                  || !KeysIntelligence.onDeviceStatus.isReady)
                         if KeysIntelligence.privateCloudEntitled {
                             StatusPill(text: KeysIntelligence.privateCloudQuota, symbol: "cloud", tint: Palette.sea)
                         }
@@ -120,6 +121,10 @@ struct SecurityCoachView: View {
     }
 
     private func generate() async {
+        guard preferences.securityCoachEnabled else {
+            message = "The security coach is off. Turn it on in Settings, under Apple Intelligence."
+            return
+        }
         guard preferences.intelligenceEnabled, KeysIntelligence.onDeviceStatus.isReady else {
             message = KeysIntelligence.onDeviceStatus.explanation
             return
@@ -245,5 +250,32 @@ struct SmartSearchSheet: View {
         } catch {
             message = KeysIntelligence.message(for: error)
         }
+    }
+}
+
+/// The visual Siri AI result for a vault health check. Counts only; never an item name or a secret.
+struct VaultHealthSnippet: View {
+    var stats: VaultStats?
+
+    var body: some View {
+        HStack(spacing: 14) {
+            if let stats {
+                ScoreRing(score: stats.score, size: 58)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(stats.grade).font(.reading(.headline, weight: .semibold))
+                    Text(stats.issueCount == 0
+                         ? "No reused, short, or old passwords."
+                         : "\(stats.issueCount) items could be stronger.")
+                        .font(.reading(.footnote))
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Image(systemName: "lock.fill").symbol().font(.title2).foregroundStyle(Palette.sea)
+                Text("Unlock Keys to check the vault.").font(.reading(.callout))
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(16)
+        .frame(maxWidth: 340)
     }
 }
