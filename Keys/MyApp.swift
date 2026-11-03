@@ -14,13 +14,16 @@ struct MyApp: App {
     @NSApplicationDelegateAdaptor(KeysNotifications.self) private var notifications
     #endif
 
-    @State private var session = VaultSession()
+    @State private var session = VaultSession(preferences: KeysPreferences.shared)
     @State private var preferences = KeysPreferences.shared
 
     init() {
         _ = BrandFont.isRegistered
         KeysShortcuts.updateAppShortcutParameters()
         KeysIntelligence.prewarm()
+        #if DEBUG
+        BiometricDiagnostics.runIfRequested()
+        #endif
     }
 
     var body: some Scene {

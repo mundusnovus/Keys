@@ -232,12 +232,27 @@ enum VaultDisk {
     nonisolated static let zoneName = "KeysVault"
 
     nonisolated static var directory: URL {
-        if let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) {
-            return group
+        #if DEBUG
+        // Screenshots and the App Review recording use an isolated folder so a demo never touches a
+        // real vault. This is compiled out of Release.
+        if let custom = ProcessInfo.processInfo.environment["KEYS_VAULT_DIR"], !custom.isEmpty {
+            return URL(fileURLWithPath: custom, isDirectory: true)
         }
-        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-            ?? URL(fileURLWithPath: NSTemporaryDirectory())
-        return support.appendingPathComponent("Keys", isDirectory: true)
+        #endif
+        let base: URL
+        if let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) {
+            base = group
+        } else {
+            let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+                ?? URL(fileURLWithPath: NSTemporaryDirectory())
+            base = support.appendingPathComponent("Keys", isDirectory: true)
+        }
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-demo") {
+            return base.appendingPathComponent("KeysDemo", isDirectory: true)
+        }
+        #endif
+        return base
     }
 
     nonisolated static var fileURL: URL { directory.appendingPathComponent("vault.keys") }

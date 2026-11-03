@@ -99,7 +99,7 @@ enum KeysIntelligence {
     }
 
     /// The locale line Apple recommends for anything other than U.S. English.
-    static var localeInstruction: String {
+    nonisolated static var localeInstruction: String {
         let locale = Locale.current
         return Locale.Language(identifier: "en_US").isEquivalent(to: locale.language)
             ? "" : " The person's locale is \(locale.identifier)."
@@ -242,10 +242,16 @@ struct SecurityCoach {
         } else {
             session = LanguageModelSession(instructions: Self.instructions)
         }
+        // Server-side reasoning is the reason to use Private Cloud Compute here. The prompt carries counts
+        // only, so a deeper analysis never sees a secret. The on-device model does not support reasoning.
+        let context = cloud
+            ? ContextOptions(reasoningLevel: .deep)
+            : ContextOptions(includeSchemaInPrompt: true)
         let response = try await session.respond(
             to: prompt,
             generating: SecurityAdvice.self,
-            options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 300)
+            options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 300),
+            contextOptions: context
         )
         return response.content
     }

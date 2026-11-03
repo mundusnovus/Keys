@@ -1,4 +1,5 @@
 import SwiftUI
+import AppIntents
 #if os(iOS)
 import UIKit
 #endif
@@ -104,6 +105,7 @@ struct VaultListView: View {
                         NavigationLink(value: item.id) {
                             ItemRowView(item: item)
                         }
+                        .appEntityIdentifier(EntityIdentifier(for: VaultItemEntity.self, identifier: item.id.uuidString))
                         .contextMenu {
                             Button(item.favorite ? "Remove Favorite" : "Favorite", systemImage: item.favorite ? "star.slash" : "star") {
                                 session.toggleFavorite(item.id)

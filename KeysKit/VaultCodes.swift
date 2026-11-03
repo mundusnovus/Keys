@@ -7,7 +7,7 @@ enum OneTimeCode {
     nonisolated static func code(secret: String, time: Date = .now, period: Int = 30, digits: Int = 6) -> String? {
         guard let key = key(from: secret), period > 0, digits > 0, digits <= 8 else { return nil }
         let counter = UInt64(time.timeIntervalSince1970) / UInt64(period)
-        var big = counter.bigEndian
+        let big = counter.bigEndian
         let message = withUnsafeBytes(of: big) { Data($0) }
         let mac = Data(HMAC<Insecure.SHA1>.authenticationCode(for: message, using: SymmetricKey(data: key)))
         guard let last = mac.last else { return nil }
@@ -39,7 +39,7 @@ enum OneTimeCode {
     /// RFC 6238 SHA1 vector. Time 59, 6 digits, secret "12345678901234567890" as raw key bytes.
     nonisolated static func rfcVector() -> String? {
         let key = Data("12345678901234567890".utf8)
-        var counter = UInt64(1).bigEndian
+        let counter = UInt64(1).bigEndian
         let message = withUnsafeBytes(of: counter) { Data($0) }
         let mac = Data(HMAC<Insecure.SHA1>.authenticationCode(for: message, using: SymmetricKey(data: key)))
         guard let last = mac.last else { return nil }
@@ -178,11 +178,11 @@ enum PasskeyBox {
         var flags: UInt8 = 0x05
         if attested != nil { flags |= 0x40 }
         data.append(flags)
-        var count = signCount.bigEndian
+        let count = signCount.bigEndian
         withUnsafeBytes(of: count) { data.append(contentsOf: $0) }
         if let attested {
             data.append(contentsOf: Data(count: 16))
-            var length = UInt16(attested.credentialID.count).bigEndian
+            let length = UInt16(attested.credentialID.count).bigEndian
             withUnsafeBytes(of: length) { data.append(contentsOf: $0) }
             data.append(attested.credentialID)
             data.append(coseKey(attested.publicKey))
@@ -229,7 +229,7 @@ enum PasskeyBox {
             data.append(UInt8(bytes.count))
         } else {
             data.append(0x59)
-            var length = UInt16(bytes.count).bigEndian
+            let length = UInt16(bytes.count).bigEndian
             withUnsafeBytes(of: length) { data.append(contentsOf: $0) }
         }
         data.append(bytes)
@@ -546,8 +546,54 @@ enum VaultRules {
 /// RULE: `kSecAttrAccessible` and `kSecAttrAccessControl` are mutually exclusive. The access control's
 /// protection class (`kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly`) is the one that applies.
 enum DeviceKey {
+    /// The result of asking the keychain whether the unlock key is present, without prompting.
+    ///
+    /// RULE: never ask for `kSecReturnData` to answer this question. An item protected by `.userPresence`
+    /// can answer a read with `errSecAuthFailed` or `errSecInteractionNotAllowed` even though it exists. 2.0
+    /// treated those as "missing", cleared the preference at launch, and Face ID/Touch ID never worked again.
+    /// Reading only attributes needs no authentication.
+    enum State: Equatable, Sendable {
+        case missing
+        case stored
+        case unavailable(OSStatus)
+    }
+
+    private nonisolated static var baseQuery: [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: VaultDisk.keychainService,
+            kSecAttrAccount as String: VaultDisk.keychainAccount,
+            kSecUseDataProtectionKeychain as String: true
+        ]
+    }
+
+    nonisolated static var state: State {
+        var query = baseQuery
+        query[kSecReturnAttributes as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var item: CFTypeRef?
+        switch SecItemCopyMatching(query as CFDictionary, &item) {
+        case errSecSuccess: return .stored
+        case errSecItemNotFound: return .missing
+        case let status: return .unavailable(status)
+        }
+    }
+
     nonisolated static func save(_ key: Data) throws {
-        delete()
+        // Updating an existing item avoids the delete/add race that could leave a duplicate behind.
+        let update: [String: Any] = [kSecValueData as String: key]
+        let updated = SecItemUpdate(baseQuery as CFDictionary, update as CFDictionary)
+        if updated == errSecSuccess { return }
+
+        if updated != errSecItemNotFound {
+            // An item exists but cannot be updated in place (it may be protected). Delete it, then add it
+            // again with a fresh access control. Deleting does not require user presence.
+            let deleted = SecItemDelete(baseQuery as CFDictionary)
+            guard deleted == errSecSuccess || deleted == errSecItemNotFound else {
+                throw VaultError.keychain(deleted)
+            }
+        }
+
         var error: Unmanaged<CFError>?
         guard let access = SecAccessControlCreateWithFlags(
             nil,
@@ -557,29 +603,26 @@ enum DeviceKey {
         ) else {
             throw VaultError.keychain(errSecParam)
         }
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: VaultDisk.keychainService,
-            kSecAttrAccount as String: VaultDisk.keychainAccount,
-            kSecAttrAccessControl as String: access,
-            kSecUseDataProtectionKeychain as String: true,
-            kSecValueData as String: key
-        ]
+        var query = baseQuery
+        query[kSecAttrAccessControl as String] = access
+        query[kSecValueData as String] = key
+        query[kSecAttrLabel as String] = "Asteria Keys vault key"
         let status = SecItemAdd(query as CFDictionary, nil)
+        if status == errSecDuplicateItem {
+            // Another process wrote it between the update and the add: update once more.
+            let retry = SecItemUpdate(baseQuery as CFDictionary, update as CFDictionary)
+            guard retry == errSecSuccess else { throw VaultError.keychain(retry) }
+            return
+        }
         guard status == errSecSuccess else { throw VaultError.keychain(status) }
     }
 
     /// Returns the key, prompting for Face ID, Touch ID, or the device passcode. Throws so callers can say why.
     nonisolated static func load(context: LAContext) throws -> Data {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: VaultDisk.keychainService,
-            kSecAttrAccount as String: VaultDisk.keychainAccount,
-            kSecUseDataProtectionKeychain as String: true,
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne,
-            kSecUseAuthenticationContext as String: context
-        ]
+        var query = baseQuery
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        query[kSecUseAuthenticationContext as String] = context
         var item: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &item)
         guard status == errSecSuccess, let data = item as? Data else {
@@ -588,34 +631,12 @@ enum DeviceKey {
         return data
     }
 
-    /// True when a key is stored, without prompting. errSecInteractionNotAllowed means it exists behind auth.
-    nonisolated static var exists: Bool {
-        let context = LAContext()
-        context.interactionNotAllowed = true
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: VaultDisk.keychainService,
-            kSecAttrAccount as String: VaultDisk.keychainAccount,
-            kSecUseDataProtectionKeychain as String: true,
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne,
-            kSecUseAuthenticationContext as String: context
-        ]
-        var item: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &item)
-        if status == errSecSuccess { return true }
-        // The item is there but cannot be read without a person's authentication.
-        return status == errSecInteractionNotAllowed
-    }
+    /// True when a key is stored. This never prompts and never reads the secret.
+    nonisolated static var exists: Bool { state == .stored }
 
-    nonisolated static func delete() {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: VaultDisk.keychainService,
-            kSecAttrAccount as String: VaultDisk.keychainAccount,
-            kSecUseDataProtectionKeychain as String: true
-        ]
-        SecItemDelete(query as CFDictionary)
+    @discardableResult
+    nonisolated static func delete() -> OSStatus {
+        SecItemDelete(baseQuery as CFDictionary)
     }
 
     nonisolated static var canUseBiometrics: Bool {

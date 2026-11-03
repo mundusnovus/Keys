@@ -6,6 +6,7 @@
 import AppIntents
 import CoreSpotlight
 import Foundation
+import SwiftUI
 import UniformTypeIdentifiers
 
 // MARK: - Entity
@@ -145,6 +146,49 @@ struct OpenItemIntent: OpenIntent {
     }
 }
 
+/// Siri AI can compose the shape of a login. It never speaks or generates a secret: the app makes the
+/// password on the device and opens the editor so the person reviews it before saving.
+struct ComposeLoginIntent: AppIntent {
+    static let title: LocalizedStringResource = "Compose a Login"
+    static let description = IntentDescription("Prepares a login in Asteria Keys and opens it for review. Keys generates the password on this device.")
+    static var supportedModes: IntentModes { .foreground }
+
+    @Parameter(title: "Name", requestValueDialog: "What should I call the login?")
+    var name: String
+
+    @Parameter(title: "Website")
+    var site: String?
+
+    @Parameter(title: "Username")
+    var username: String?
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let request = ComposeRequest(kind: .login, title: name, site: site ?? "", username: username ?? "")
+        await MainActor.run {
+            KeysRuntime.session?.composeRequest = request
+        }
+        return .result(dialog: "I prepared \(name) in Keys. Review it and choose Save.")
+    }
+}
+
+/// Siri AI can hand a sentence to the on-device composer. The sentence stays on this device because it
+/// may contain a secret; the model turns it into fields and the person confirms them.
+struct CaptureLoginIntent: AppIntent {
+    static let title: LocalizedStringResource = "Draft a Login from a Sentence"
+    static let description = IntentDescription("Turns a sentence into a login draft in Asteria Keys, on this device.")
+    static var supportedModes: IntentModes { .foreground }
+
+    @Parameter(title: "Description", requestValueDialog: "Describe the login.")
+    var sentence: String
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        await MainActor.run {
+            KeysRuntime.session?.captureRequest = sentence
+        }
+        return .result(dialog: "I opened Capture in Keys. Check the fields before saving.")
+    }
+}
+
 @AppIntent(schema: .system.searchInApp)
 struct SearchVaultIntent: ShowInAppSearchResultsIntent {
     static let title: LocalizedStringResource = "Find in Keys"
@@ -229,19 +273,21 @@ struct VaultHealthIntent: AppIntent {
     static let description = IntentDescription("Says how many security issues the vault has. It never lists a password.")
     static var supportedModes: IntentModes { .background }
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         let state = await MainActor.run { () -> (Bool, VaultStats) in
             guard let session = KeysRuntime.session, session.phase == .unlocked else { return (false, VaultStats()) }
             return (true, session.stats)
         }
         guard state.0 else {
-            return .result(dialog: "Unlock Keys to check the vault.")
+            return .result(dialog: "Unlock Keys to check the vault.", view: VaultHealthSnippet(stats: nil))
         }
         let stats = state.1
         if stats.issueCount == 0 {
-            return .result(dialog: "Your vault looks good. Keys found no reused, short, or old passwords.")
+            return .result(dialog: "Your vault looks good. Keys found no reused, short, or old passwords.",
+                           view: VaultHealthSnippet(stats: stats))
         }
-        return .result(dialog: "Keys found \(stats.issueCount) items to review. Open Keys to see them.")
+        return .result(dialog: "Keys found \(stats.issueCount) items to review. Open Keys to see them.",
+                       view: VaultHealthSnippet(stats: stats))
     }
 }
 
@@ -266,6 +312,18 @@ struct KeysShortcuts: AppShortcutsProvider {
             phrases: ["Open \(\.$target) in \(.applicationName)", "Show \(\.$target) in \(.applicationName)"],
             shortTitle: "Open an Item",
             systemImageName: "key.horizontal"
+        )
+        AppShortcut(
+            intent: ComposeLoginIntent(),
+            phrases: ["Compose a login in \(.applicationName)", "Make a login in \(.applicationName)"],
+            shortTitle: "Compose a Login",
+            systemImageName: "rectangle.and.pencil.and.ellipsis"
+        )
+        AppShortcut(
+            intent: CaptureLoginIntent(),
+            phrases: ["Draft a login in \(.applicationName)", "Capture a login in \(.applicationName)"],
+            shortTitle: "Draft a Login",
+            systemImageName: "sparkles"
         )
         AppShortcut(
             intent: GeneratePasswordIntent(),

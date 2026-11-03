@@ -29,6 +29,7 @@ struct SettingsView: View {
                 }
         }
         .tint(preferences.accent.color)
+        .environment(\.keysGlass, preferences.glass)
         .onAppear {
             if path.isEmpty, initialPane != .general { path = [initialPane] }
         }
@@ -130,7 +131,7 @@ private struct GeneralSettingsPane: View {
                                     Circle().fill(choice.color).frame(width: 30, height: 30)
                                     if preferences.accent == choice {
                                         Image(systemName: "checkmark")
-                                            .font(.caption.bold())
+                                            .font(.reading(.caption, weight: .bold))
                                             .foregroundStyle(.white)
                                     }
                                 }
@@ -196,6 +197,9 @@ private struct SecuritySettingsPane: View {
                         }
                     )) {
                         Label(FaceIDCopy.name, systemImage: FaceIDCopy.symbol)
+                    }
+                    LabeledContent("Stored key") {
+                        StatusPill(text: biometricKeyLabel, symbol: biometricKeySymbol, tint: biometricKeyTint)
                     }
                     if !session.biometricsMessage.isEmpty {
                         Text(session.biometricsMessage).font(.reading(.footnote)).foregroundStyle(Palette.alert)
@@ -274,6 +278,30 @@ private struct SecuritySettingsPane: View {
             Text("The iCloud copy is not deleted.")
         }
     }
+
+    private var biometricKeyLabel: String {
+        switch DeviceKey.state {
+        case .stored: "Ready"
+        case .missing: "Not set"
+        case .unavailable: "Unavailable"
+        }
+    }
+
+    private var biometricKeySymbol: String {
+        switch DeviceKey.state {
+        case .stored: "checkmark.circle.fill"
+        case .missing: "circle"
+        case .unavailable: "exclamationmark.triangle"
+        }
+    }
+
+    private var biometricKeyTint: Color {
+        switch DeviceKey.state {
+        case .stored: Palette.pass
+        case .missing: .secondary
+        case .unavailable: Palette.alert
+        }
+    }
 }
 
 private struct ChangePasswordView: View {
@@ -339,11 +367,18 @@ private struct SyncSettingsPane: View {
                     }
                 }
                 LabeledContent("iCloud account", value: session.iCloudAccount)
+                if !session.syncAvailable {
+                    Label("iCloud is off for this build.", systemImage: "icloud.slash")
+                        .foregroundStyle(Palette.alert)
+                }
                 if let last = session.lastSync {
                     LabeledContent("Last sync", value: last.formatted(date: .abbreviated, time: .shortened))
                 }
                 if session.pendingUploads > 0 {
                     LabeledContent("Waiting to upload", value: "\(session.pendingUploads)")
+                }
+                if session.pendingDeletes > 0 {
+                    LabeledContent("Waiting to delete", value: "\(session.pendingDeletes)")
                 }
                 if let error = session.syncError, !error.isEmpty {
                     Text(error).font(.reading(.footnote)).foregroundStyle(Palette.alert)
@@ -351,7 +386,7 @@ private struct SyncSettingsPane: View {
             } header: {
                 Text("Devices")
             } footer: {
-                Text("Keys stores ciphertext in your private iCloud database. The master password never leaves your devices, so Apple cannot read an item.")
+                Text("Keys stores ciphertext in your private iCloud database. The master password never leaves your devices, so Apple cannot read an item. A change made on one device is picked up by the other when it is open, when it becomes active, and when the network returns.")
             }
 
             Section {
@@ -360,7 +395,16 @@ private struct SyncSettingsPane: View {
                 } label: {
                     Label("Sync Now", systemImage: "arrow.clockwise")
                 }
-                .disabled(session.syncPhase == .syncing)
+                .disabled(session.syncPhase == .syncing || !session.syncAvailable)
+                Button {
+                    Task { await session.syncEverythingNow() }
+                } label: {
+                    Label("Sync Everything Again", systemImage: "arrow.triangle.2.circlepath.icloud")
+                }
+                .disabled(session.syncPhase == .syncing || !session.syncAvailable)
+                Text("Checks every item against iCloud. It does not erase anything on this device.")
+                    .font(.reading(.footnote))
+                    .foregroundStyle(.secondary)
                 if session.syncPhase == .paused {
                     Button {
                         session.resumeSync()
@@ -386,7 +430,7 @@ private struct SyncSettingsPane: View {
                     .font(.reading(.caption))
                 LabeledContent("Environment", value: session.syncEnvironment)
                 LabeledContent("Phase", value: session.syncPhase.label)
-                LabeledContent("Pending", value: "\(session.pendingUploads) uploads")
+                LabeledContent("Pending", value: "\(session.pendingUploads) uploads, \(session.pendingDeletes) deletes")
                 Text("A TestFlight or App Store build uses the Production CloudKit environment. An Xcode build uses Development. They do not see each other until the schema is deployed.")
                     .font(.reading(.footnote))
                     .foregroundStyle(.secondary)

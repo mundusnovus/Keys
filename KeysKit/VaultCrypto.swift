@@ -22,15 +22,17 @@ enum VaultError: Error, LocalizedError, Equatable {
         case .keychain(let status):
             switch status {
             case errSecMissingEntitlement:
-                "Face ID could not be turned on because the keychain group is not available to this build."
+                "Biometric unlock could not be turned on because the keychain group is not available to this build."
             case errSecAuthFailed, errSecUserCanceled:
-                "Face ID was cancelled."
+                "Biometric unlock was cancelled. Try again, or use your master password."
             case errSecInteractionNotAllowed:
                 "The device needs to be unlocked first."
             case errSecItemNotFound:
-                "Turn on Face ID after unlocking with your master password once."
+                "The Face ID or Touch ID key is no longer on this device. Unlock with your master password, then turn it on again in Settings."
+            case errSecDuplicateItem:
+                "The Face ID or Touch ID key already exists. Turn it off, then on again in Settings."
             default:
-                "The keychain could not save the unlock key (error \(status))."
+                "The keychain could not read the unlock key (error \(status))."
             }
         }
     }
@@ -41,8 +43,30 @@ struct VaultHeader: Codable, Sendable, Equatable {
     var iterations: Int
     var wrappedKey: Data
     var recoveryWrap: Data
+    /// Stable identity for the vault across password changes. The salt is regenerated when the master
+    /// password changes, so salt alone must never be used to decide whether two devices share a vault.
+    /// Optional so vaults written by 1.x still decode.
+    var vaultID: String? = nil
     /// When the wrapped key last changed. Optional so vaults written by 1.x still decode.
     var revised: Date? = nil
+
+    /// A vault identity that every version can compute. New vaults store a UUID; old vaults derive a
+    /// stable value from the recovery wrap, which a password change never rewrites.
+    var effectiveID: String {
+        if let vaultID, !vaultID.isEmpty { return vaultID }
+        return VaultCrypto.identity(for: recoveryWrap)
+    }
+
+    /// True when both headers describe the same vault, even after a master-password change.
+    func isSameVault(as other: VaultHeader) -> Bool {
+        if let vaultID, let otherID = other.vaultID, !vaultID.isEmpty, !otherID.isEmpty {
+            return vaultID == otherID
+        }
+        // A 1.x vault has no vaultID. Its recovery wrap is stable across password changes and is
+        // identical on every device that shares the vault, so it is a safe migration key.
+        if recoveryWrap == other.recoveryWrap { return true }
+        return effectiveID == other.effectiveID
+    }
 }
 
 enum VaultCrypto {
@@ -50,6 +74,12 @@ enum VaultCrypto {
     nonisolated static let iterations = 600_000
     nonisolated static let keyLength = 32
     nonisolated static let minimumPasswordLength = 12
+
+    /// A stable, non-secret identity for a vault that predates `vaultID`. The recovery wrap is never
+    /// rewritten by a master-password change, so both devices derive the same value.
+    nonisolated static func identity(for recoveryWrap: Data) -> String {
+        Data(SHA256.hash(data: recoveryWrap)).map { String(format: "%02x", $0) }.joined()
+    }
 
     nonisolated static func randomBytes(_ count: Int) -> Data {
         var data = Data(count: count)
@@ -68,7 +98,7 @@ enum VaultCrypto {
     nonisolated static func stretch(password: String, salt: Data, iterations: Int) -> SymmetricKey {
         let passwordData = Data(password.utf8)
         var block = Data(salt)
-        var counter = UInt32(1).bigEndian
+        let counter = UInt32(1).bigEndian
         withUnsafeBytes(of: counter) { block.append(contentsOf: $0) }
         var u = hmacSHA256(key: passwordData, message: block)
         var derived = u
@@ -92,6 +122,7 @@ enum VaultCrypto {
             iterations: iterations,
             wrappedKey: try seal(key, key: stretched),
             recoveryWrap: try seal(key, key: SymmetricKey(data: recovery)),
+            vaultID: UUID().uuidString,
             revised: .now
         )
         return (header, key, recovery)
@@ -106,7 +137,8 @@ enum VaultCrypto {
         try open(header.recoveryWrap, key: SymmetricKey(data: recoveryKey))
     }
 
-    nonisolated static func rewrap(key: Data, password: String, recoveryWrap: Data) throws -> VaultHeader {
+    nonisolated static func rewrap(key: Data, password: String, recoveryWrap: Data,
+                                   vaultID: String?) throws -> VaultHeader {
         guard password.count >= minimumPasswordLength else { throw VaultError.weakPassword }
         let salt = randomBytes(16)
         let stretched = stretch(password: password, salt: salt, iterations: iterations)
@@ -115,6 +147,7 @@ enum VaultCrypto {
             iterations: iterations,
             wrappedKey: try seal(key, key: stretched),
             recoveryWrap: recoveryWrap,
+            vaultID: vaultID,
             revised: .now
         )
     }

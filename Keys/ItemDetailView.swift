@@ -30,6 +30,10 @@ struct ItemDetailView: View {
             }
         }
         .navigationTitle(item?.displayTitle ?? "Item")
+        #if os(iOS)
+        // The hero repeats the name at a readable size; a large navigation title would duplicate it.
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
             if let item {
                 ToolbarItem(placement: .primaryAction) {
@@ -106,6 +110,8 @@ struct ItemDetailView: View {
             activity.appEntityIdentifier = EntityIdentifier(for: VaultItemEntity.self, identifier: item.id.uuidString)
             activity.userInfo = ["id": item.id.uuidString]
         }
+        // Gives Siri AI the "this item" onscreen context without exposing any field.
+        .appEntityIdentifier(EntityIdentifier(for: VaultItemEntity.self, identifier: item.id.uuidString))
     }
 
     private func hero(_ item: VaultItem) -> some View {
@@ -147,7 +153,7 @@ struct ItemDetailView: View {
 
     private func actions(_ item: VaultItem) -> some View {
         GlassEffectContainer(spacing: 10) {
-            HStack(spacing: 10) {
+            VStack(spacing: 10) {
                 if !item.password.isEmpty {
                     Button {
                         Task { await copySecret(item.password, label: "Password copied") }
@@ -157,23 +163,27 @@ struct ItemDetailView: View {
                     }
                     .buttonStyle(.glassProminent)
                 }
-                if !item.username.isEmpty {
-                    Button {
-                        session.copy(item.username)
-                        show("Username copied")
-                    } label: {
-                        Label("Username", systemImage: "person")
+                HStack(spacing: 10) {
+                    if !item.username.isEmpty {
+                        Button {
+                            session.copy(item.username)
+                            show("Username copied")
+                        } label: {
+                            Label("Username", systemImage: "person")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.glass)
+                        .accessibilityLabel("Copy username")
                     }
-                    .buttonStyle(.glass)
-                    .accessibilityLabel("Copy username")
-                }
-                if let url = siteURL(item) {
-                    Button {
-                        openURL(url)
-                    } label: {
-                        Label("Open Site", systemImage: "safari")
+                    if let url = siteURL(item) {
+                        Button {
+                            openURL(url)
+                        } label: {
+                            Label("Open Site", systemImage: "safari")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.glass)
                     }
-                    .buttonStyle(.glass)
                 }
             }
             .controlSize(.large)

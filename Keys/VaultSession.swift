@@ -1,6 +1,7 @@
 import CloudKit
 import Foundation
 import LocalAuthentication
+import Network
 import Observation
 import SwiftUI
 #if canImport(UIKit)
@@ -25,6 +26,18 @@ enum VaultFilter: Hashable {
     case health
     case kind(ItemKind)
     case folder(UUID)
+}
+
+/// A request from Siri, Shortcuts, or a deep link to compose a new item. It carries no secret: the
+/// password is generated on the device and shown in the editor for review.
+struct ComposeRequest: Identifiable, Equatable, Sendable {
+    let id = UUID()
+    var kind: ItemKind = .login
+    var title = ""
+    var site = ""
+    var username = ""
+    var note = ""
+    var generatePassword = true
 }
 
 /// The app-level handle App Intents use. Intents are not main-actor by default, so every access hops here.
@@ -108,7 +121,10 @@ final class VaultSession {
     var syncMessage = "Not synced yet."
     var syncError: String?
     var pendingUploads = 0
+    var pendingDeletes = 0
     var iCloudAccount = "Checking iCloud…"
+    var syncAvailable = CloudSync.isAllowed
+    var demoMode = false
 
     // Biometrics.
     var biometricsAvailable = DeviceKey.canAuthenticate
@@ -119,6 +135,8 @@ final class VaultSession {
     var openItemID: UUID?
     var searchRequest: String?
     var newItemRequest: ItemKind?
+    var composeRequest: ComposeRequest?
+    var captureRequest: String?
 
     let preferences: KeysPreferences
 
@@ -129,8 +147,11 @@ final class VaultSession {
     @ObservationIgnored private var backgroundedAt: Date?
     @ObservationIgnored private var accountObserver: NSObjectProtocol?
     @ObservationIgnored private let cloud = CloudSync()
+    @ObservationIgnored private var syncTimer: Task<Void, Never>?
+    @ObservationIgnored private var pathMonitor: NWPathMonitor?
+    @ObservationIgnored private var lastPathStatus: NWPath.Status?
 
-    init(preferences: KeysPreferences = .shared) {
+    init(preferences: KeysPreferences) {
         self.preferences = preferences
     }
 
@@ -208,15 +229,53 @@ final class VaultSession {
         assert(rules == "ok", rules)
         #endif
         biometricsAvailable = DeviceKey.canAuthenticate
-        biometricsEnabled = preferences.biometricsEnabled && DeviceKey.exists
-        if !biometricsEnabled { preferences.biometricsEnabled = false }
+        switch DeviceKey.state {
+        case .stored:
+            biometricsEnabled = preferences.biometricsEnabled
+        case .missing:
+            biometricsEnabled = false
+            if preferences.biometricsEnabled {
+                preferences.biometricsEnabled = false
+                biometricsMessage = "\(FaceIDCopy.name) needs to be turned on again. Unlock with your master password, then enable it in Settings."
+            }
+        case .unavailable(let status):
+            // A transient keychain failure must not switch biometrics off for good.
+            biometricsEnabled = false
+            if preferences.biometricsEnabled {
+                biometricsMessage = "Keys couldn't open the \(FaceIDCopy.name) key right now (error \(status)). Unlock with your master password, then try again."
+            }
+        }
+
+        #if DEBUG
+        if DemoVault.isRequested, let demo = (try? DemoVault.load()) ?? nil {
+            key = demo.key
+            items = demo.items
+            phase = .unlocked
+            demoMode = true
+            syncAvailable = false
+            syncPhase = .paused
+            syncMessage = "Demo vault. iCloud is off for this run."
+            syncError = nil
+            pendingUploads = 0
+            pendingDeletes = 0
+            iCloudAccount = "Demo mode"
+            autofillOn = false
+            if DemoVault.openFirst { openItemID = demo.items.first?.id }
+            if ProcessInfo.processInfo.arguments.contains("-biometric-flow") {
+                await runBiometricFlow(demo.key)
+                return
+            }
+            return
+        }
+        #endif
 
         observeAccountChanges()
+        startSyncServices()
         let local = VaultDisk.read()
         switch await cloud.lookupHeader() {
         case .found(let header):
             if let local {
-                if local.header.salt != header.salt, !cloud.isPaused() {
+                if !local.header.isSameVault(as: header), !cloud.isPaused() {
                     phase = .mismatch
                     reflectCloud()
                     return
@@ -225,7 +284,10 @@ final class VaultSession {
                 var file = VaultFile.empty(header: header)
                 file.headerNeedsUpload = false
                 try? VaultDisk.write(file)
-                message = "This iCloud account already has a Keys vault."
+                // A new device (or a vault erased without its state) must fetch every record, not only
+                // the changes after a token this device never should have kept.
+                cloud.resetToken()
+                message = "This iCloud account already has a Keys vault. Unlock it with the master password from your other device."
             }
             phase = .locked
             scheduleSync()
@@ -306,7 +368,7 @@ final class VaultSession {
             try VaultDisk.write(VaultFile.empty(header: made.header))
             key = made.key
             items = []
-            try? DeviceKey.delete()
+            DeviceKey.delete()
             preferences.biometricsEnabled = false
             biometricsEnabled = false
             recovery = Base32.groups(made.recovery)
@@ -350,12 +412,15 @@ final class VaultSession {
     }
 
     func unlockBiometric() async {
-        guard biometricsEnabled else {
-            message = "Turn on Face ID in Settings after unlocking with your master password once."
+        guard preferences.biometricsEnabled else {
+            message = "Turn on \(FaceIDCopy.name) in Settings after unlocking with your master password once."
+            return
+        }
+        guard DeviceKey.exists else {
+            message = "The \(FaceIDCopy.name) key is no longer on this device. Unlock with your master password, then turn it on again in Settings."
             return
         }
         let context = LAContext()
-        context.localizedReason = "Unlock Keys"
         context.localizedFallbackTitle = "Use Master Password"
         guard let file = VaultDisk.read() else {
             message = "The vault file is missing."
@@ -365,6 +430,7 @@ final class VaultSession {
             let opened = try DeviceKey.load(context: context)
             try await adopt(opened, file: file)
             message = ""
+            biometricsEnabled = true
             phase = .unlocked
             scheduleSync()
         } catch {
@@ -372,6 +438,7 @@ final class VaultSession {
             message = description
             if let vaultError = error as? VaultError,
                case .keychain(let status) = vaultError, status == errSecItemNotFound {
+                // The item is definitively gone. Clear both states; the person can turn it on again.
                 preferences.biometricsEnabled = false
                 biometricsEnabled = false
             }
@@ -386,11 +453,12 @@ final class VaultSession {
             return false
         }
         guard DeviceKey.canAuthenticate else {
-            biometricsMessage = "Set a device passcode or Face ID in Settings first."
+            biometricsMessage = "Set a device passcode or \(FaceIDCopy.name) in Settings first."
             return false
         }
         do {
             try DeviceKey.save(key)
+            guard DeviceKey.exists else { throw VaultError.keychain(errSecItemNotFound) }
             preferences.biometricsEnabled = true
             biometricsEnabled = true
             biometricsMessage = ""
@@ -407,7 +475,7 @@ final class VaultSession {
         DeviceKey.delete()
         preferences.biometricsEnabled = false
         biometricsEnabled = false
-        biometricsMessage = "Face ID is off. The master password is still required."
+        biometricsMessage = "\(FaceIDCopy.name) is off. The master password is still required."
     }
 
     func unlockRecovery(_ code: String) async {
@@ -442,7 +510,9 @@ final class VaultSession {
         guard let key, let file = VaultDisk.read() else { return "Unlock Keys first." }
         do {
             let header = try await Task.detached {
-                try VaultCrypto.rewrap(key: key, password: updated, recoveryWrap: file.header.recoveryWrap)
+                try VaultCrypto.rewrap(key: key, password: updated,
+                                       recoveryWrap: file.header.recoveryWrap,
+                                       vaultID: file.header.vaultID)
             }.value
             try VaultDisk.update { stored in
                 stored.header = header
@@ -496,6 +566,12 @@ final class VaultSession {
 
     func syncNow() async {
         guard phase != .mismatch else { return }
+        guard !demoMode else {
+            syncPhase = .paused
+            syncMessage = "Demo vault. iCloud is off for this run."
+            syncError = nil
+            return
+        }
         let report = await cloud.sync(key: key)
         reflectCloud()
         switch report {
@@ -524,6 +600,8 @@ final class VaultSession {
         syncPhase = cloud.phase
         lastSync = cloud.lastSync
         pendingUploads = cloud.pendingUploads
+        pendingDeletes = cloud.pendingDeletes
+        syncAvailable = cloud.isEnabled
         if cloud.lastMessage != "Not synced yet." { syncMessage = cloud.lastMessage }
         if let error = cloud.lastError { syncError = error }
     }
@@ -536,6 +614,20 @@ final class VaultSession {
         }
     }
 
+    /// Clears the CloudKit change token and downloads every record again. Safe to run at any time; it
+    /// never deletes the local vault.
+    func syncEverythingNow() async {
+        guard cloud.isEnabled else {
+            syncError = "iCloud is off for this build."
+            return
+        }
+        cloud.resetToken()
+        await syncNow()
+        if syncError == nil {
+            syncMessage = "Everything was checked against iCloud."
+        }
+    }
+
     func resumeSync() {
         cloud.resume()
         scheduleSync()
@@ -543,11 +635,49 @@ final class VaultSession {
 
     func refreshAccount() async {
         iCloudAccount = await cloud.accountExplanation()
+        syncAvailable = cloud.isEnabled
     }
 
     func pauseSync() {
         cloud.pause()
         reflectCloud()
+    }
+
+    /// Sync while the app is open, and again when the network comes back. Saves already schedule a sync;
+    /// this closes the two gaps that made a password on one device seem missing on the other: a device
+    /// sitting open, and a device that was offline when the other one saved.
+    private func startSyncServices() {
+        guard syncTimer == nil else { return }
+        syncTimer = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(45))
+                guard let self, !Task.isCancelled else { return }
+                guard self.phase == .unlocked || self.phase == .locked else { continue }
+                if self.pathMonitor?.currentPath.status == .satisfied {
+                    await self.syncNow()
+                }
+            }
+        }
+
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] path in
+            guard let session = self else { return }
+            Task { @MainActor in
+                session.notePath(path)
+            }
+        }
+        monitor.start(queue: DispatchQueue(label: "technology.asteria.keys.network", qos: .utility))
+        pathMonitor = monitor
+    }
+
+    /// A network change is not an instruction to sync immediately; it only schedules a sync when the
+    /// connection returns, so a flapping network cannot spin the vault.
+    private func notePath(_ path: NWPath) {
+        let wasOffline = lastPathStatus != .satisfied
+        lastPathStatus = path.status
+        if path.status == .satisfied, wasOffline {
+            scheduleSync()
+        }
     }
 
     private func observeAccountChanges() {
@@ -707,6 +837,35 @@ final class VaultSession {
 
     // MARK: - Private
 
+    #if DEBUG
+    /// Exercises the exact production path: save the key behind the keychain policy, lock, then unlock
+    /// with biometrics. The result is written beside the vault for a simulator run to prove.
+    private func runBiometricFlow(_ vaultKey: Data) async {
+        var lines: [String] = []
+        do {
+            try DeviceKey.save(vaultKey)
+            preferences.biometricsEnabled = true
+            biometricsEnabled = true
+            lock()
+            lines.append("locked=\(phase == .locked)")
+            await unlockBiometric()
+            lines.append("phase=\(phase)")
+            lines.append("items=\(items.count)")
+            lines.append("message=\(message)")
+        } catch {
+            lines.append("error=\(error.localizedDescription)")
+            lines.append("state=\(DeviceKey.state)")
+        }
+        DeviceKey.delete()
+        preferences.biometricsEnabled = false
+        biometricsEnabled = false
+        key = nil
+        items = []
+        let url = VaultDisk.directory.appendingPathComponent("biometric-flow.txt")
+        try? lines.joined(separator: "\n").write(to: url, atomically: true, encoding: .utf8)
+    }
+    #endif
+
     private func adopt(_ opened: Data, file: VaultFile) async throws {
         let openedItems = try await Task.detached {
             try VaultBox.openAll(file, key: opened)
@@ -726,6 +885,12 @@ final class VaultSession {
 
     private func keepBiometricKey(_ opened: Data) {
         guard preferences.biometricsEnabled else { return }
+        // The vault key never changes when the master password changes, so a stored key is already correct.
+        // Re-saving on every password unlock caused a delete/add race and could leave biometrics broken.
+        if DeviceKey.exists {
+            biometricsEnabled = true
+            return
+        }
         do {
             try DeviceKey.save(opened)
             biometricsEnabled = true
