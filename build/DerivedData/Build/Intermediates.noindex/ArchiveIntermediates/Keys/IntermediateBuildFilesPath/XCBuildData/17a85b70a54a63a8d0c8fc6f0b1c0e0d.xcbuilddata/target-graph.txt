@@ -1,4 +1,0 @@
-Target dependency graph (2 targets)
-Target 'Keys' in project 'Keys'
-➜ Explicit dependency on target 'KeysFillMac' in project 'Keys'
-Target 'KeysFillMac' in project 'Keys' (no dependencies)
