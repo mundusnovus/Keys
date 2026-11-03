@@ -57,14 +57,23 @@ different databases, and the Production database has no schema.
   the app offers "Try Again" or an explicit "Create a vault on this device" choice. It never forks the vault
   by accident.
 
+## One command, if you have a management token
+
+```sh
+xcrun cktool save-token --type management   # paste the CloudKit Console token once
+tools/cloudkit-schema.sh                    # export Development, import to Production
+```
+
+`tools/cloudkit-schema.sh` copies the current Development schema, validates it, and imports it into
+Production. It never deletes data. Without a token, use the Console button above.
+
 ## Verifying
 
 ```sh
+tools/cloudkit-schema.sh
 xcrun cktool export-schema --team-id KZFR2T5L2A \
   --container-id iCloud.technology.asteria.keys --environment production
 ```
-
-The command needs a CloudKit management token (`xcrun cktool save-token`). Without it, use the Console.
 
 After deploying, install the same TestFlight build on both devices, create a login on one, and confirm it on
 the other. A Debug Mac and a TestFlight iPhone will still not see each other; that is expected.

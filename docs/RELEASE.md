@@ -1,6 +1,6 @@
 # Releasing Asteria Keys 2.0
 
-The app is archived and exported locally by the agent on 2 November 2026 (build 3). Uploading, TestFlight, and
+The app is archived and exported locally by the agent on 2 November 2026 (build 4). Uploading, TestFlight, and
 the App Store listing are the owner's steps.
 
 ## Before every upload

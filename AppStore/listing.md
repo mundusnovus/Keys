@@ -5,7 +5,7 @@
 | App name | Asteria Keys |
 | Bundle id | technology.asteria.keys |
 | Version | 2.0 |
-| Build | 3 |
+| Build | 4 |
 | Category | Productivity |
 | Age rating | 4+ |
 | Support URL | https://asteria.technology/keys/support |

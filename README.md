@@ -6,7 +6,7 @@ and macOS 27.
 
 | | |
 | --- | --- |
-| Version | 2.0 (build 3) |
+| Version | 2.0 (build 4) |
 | Bundle id | `technology.asteria.keys` |
 | Project | `Keys.xcodeproj` |
 | Design system | `Keys/Theme.swift` (SF Pro, Asteria Pixel, hierarchical SF Symbols, Liquid Glass) |

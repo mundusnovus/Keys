@@ -39,7 +39,7 @@ server, no analytics, and no advertising.
 ## Platform and versions
 
 - iOS 27.2 and macOS 27.2, one multiplatform target, Swift 5 language mode with Swift 6 concurrency checking.
-- Version 2.0, build 3. Bundle id `technology.asteria.keys`.
+- Version 2.0, build 4. Bundle id `technology.asteria.keys`.
 - iCloud container `iCloud.technology.asteria.keys`, app group `group.technology.asteria.keys`.
 - The CloudKit Production schema must be deployed in the CloudKit Console before a TestFlight or App Store build
   can see records created by a Development build.
