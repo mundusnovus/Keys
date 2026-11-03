@@ -1,0 +1,364 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/KeysIntents.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Vault Item",
+        "location": {
+          "startingColumn": 15,
+          "startingLine": 16
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld items",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Title"
+      },
+      {
+        "comment": "",
+        "key": "Site"
+      },
+      {
+        "comment": "",
+        "key": "Kind"
+      },
+      {
+        "comment": "",
+        "key": "%@",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ · %@",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 36
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open an Item in Keys",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opens a login, note, or card in Asteria Keys.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 134
+        }
+      },
+      {
+        "comment": "",
+        "key": "Item"
+      },
+      {
+        "comment": "",
+        "key": "Which item should Keys open?"
+      },
+      {
+        "comment": "",
+        "key": "Compose a Login",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "Prepares a login in Asteria Keys and opens it for review. Keys generates the password on this device.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 153
+        }
+      },
+      {
+        "comment": "",
+        "key": "I prepared %@ in Keys. Review it and choose Save.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "What should I call the login?"
+      },
+      {
+        "comment": "",
+        "key": "Website"
+      },
+      {
+        "comment": "",
+        "key": "Username"
+      },
+      {
+        "comment": "",
+        "key": "Draft a Login from a Sentence",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 177
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turns a sentence into a login draft in Asteria Keys, on this device.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "I opened Capture in Keys. Check the fields before saving.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 188
+        }
+      },
+      {
+        "comment": "",
+        "key": "Description"
+      },
+      {
+        "comment": "",
+        "key": "Describe the login."
+      },
+      {
+        "comment": "",
+        "key": "Find in Keys",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 194
+        }
+      },
+      {
+        "comment": "",
+        "key": "Searches the names, usernames, and sites in your vault. Keys never speaks a password.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 195
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Keys",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 210
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opens Asteria Keys.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 211
+        }
+      },
+      {
+        "comment": "",
+        "key": "Generate a Password",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 220
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copies a new strong password. Keys does not speak it.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "A new password is on the clipboard. It will be cleared shortly.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 231
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy a Password",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 236
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copies the password for an item. Requires an unlocked vault.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 237
+        }
+      },
+      {
+        "comment": "",
+        "key": "The password for %@ is on the clipboard.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 256
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock Keys, then try again.",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 249
+        }
+      },
+      {
+        "comment": "",
+        "key": "Item"
+      },
+      {
+        "comment": "",
+        "key": "Which password should Keys copy?"
+      },
+      {
+        "comment": "",
+        "key": "Lock Keys",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "Locks the vault.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 262
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys is locked.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 267
+        }
+      },
+      {
+        "comment": "",
+        "key": "Check Vault Health",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 272
+        }
+      },
+      {
+        "comment": "",
+        "key": "Says how many security issues the vault has. It never lists a password.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your vault looks good. Keys found no reused, short, or old passwords.",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 286
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys found %lld items to review. Open Keys to see them.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 289
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock Keys to check the vault.",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 282
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Keys",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 301
+        }
+      },
+      {
+        "comment": "",
+        "key": "Find in Keys",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 307
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open an Item",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 313
+        }
+      },
+      {
+        "comment": "",
+        "key": "Compose a Login",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 319
+        }
+      },
+      {
+        "comment": "",
+        "key": "Draft a Login",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 325
+        }
+      },
+      {
+        "comment": "",
+        "key": "Generate a Password",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 331
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lock Keys",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 337
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,192 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/HomeView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Home",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "Security score %lld out of 100. Open Security.",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add a login, generate a password, or let Apple Intelligence draft one from a sentence.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your vault is ready",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add a login",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 86
+        }
+      },
+      {
+        "comment": "",
+        "key": "No reused, short, or old passwords.",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld items could be stronger.",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 104
+        }
+      },
+      {
+        "comment": "",
+        "key": "Review",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ask Coach",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ask Apple Intelligence for a security briefing",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "See all",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 147
+        }
+      },
+      {
+        "comment": "",
+        "key": "Demo vault",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "iCloud and sync are off for this run. Everything else works as it does in the shipping app.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 179
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync now",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 215
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld waiting to upload",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 198
+        }
+      },
+      {
+        "comment": "",
+        "key": "Last sync %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 202
+        }
+      },
+      {
+        "comment": "",
+        "key": "Never sees a password, username, site name, or note.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 249
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apple Intelligence",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 225
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 245
+        }
+      },
+      {
+        "comment": "",
+        "key": "Security coach",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 241
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys keeps your vault encrypted on this device and stores only ciphertext in your own iCloud.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 282
+        }
+      },
+      {
+        "comment": "",
+        "key": "Asteria Keys 2.0",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 285
+        }
+      }
+    ]
+  },
+  "version": 1
+}

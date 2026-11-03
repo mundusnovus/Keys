@@ -1,0 +1,30 @@
+{
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/HomeView.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HomeView.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HomeView.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HomeView.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HomeView.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HomeView.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/IdentityPublisher.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/IdentityPublisher.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/IdentityPublisher.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/IdentityPublisher.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/IdentityPublisher.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/IdentityPublisher.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/Intelligence.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Intelligence.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Intelligence.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Intelligence.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Intelligence.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Intelligence.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/Autofill.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Autofill.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Autofill.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Autofill.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Autofill.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/Autofill.swiftdeps"
+  }
+}

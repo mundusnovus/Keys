@@ -1,0 +1,30 @@
+{
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/BiometricDiagnostics.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/BiometricDiagnostics.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/BiometricDiagnostics.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/BiometricDiagnostics.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/BiometricDiagnostics.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/BiometricDiagnostics.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/Capture.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Capture.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Capture.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Capture.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Capture.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Capture.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/CloudSync.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/CloudSync.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/CloudSync.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/CloudSync.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/CloudSync.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/CloudSync.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/Components.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Components.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Components.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Components.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Components.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/Components.swiftdeps"
+  }
+}

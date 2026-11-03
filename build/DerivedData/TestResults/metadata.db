@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FormatVersion</key>
+	<integer>1</integer>
+	<key>Store</key>
+	<dict>
+		<key>KeysTests</key>
+		<dict>
+			<key>KeysKitRulesTests</key>
+			<dict>
+				<key>base32RoundTrip</key>
+				<dict>
+					<key>mrnet</key>
+					<real>0.0007038116455078125</real>
+				</dict>
+				<key>conflictKeepsBoth</key>
+				<dict>
+					<key>mrnet</key>
+					<real>0.00067782402038574219</real>
+				</dict>
+				<key>legacyVaultIdentity</key>
+				<dict>
+					<key>mrnet</key>
+					<real>0.0035381317138671875</real>
+				</dict>
+				<key>rewrap</key>
+				<dict>
+					<key>mrnet</key>
+					<real>7.2987701892852783</real>
+				</dict>
+				<key>sealedCiphertext</key>
+				<dict>
+					<key>mrnet</key>
+					<real>0.0045959949493408203</real>
+				</dict>
+				<key>vaultRules</key>
+				<dict>
+					<key>mrnet</key>
+					<real>0.0073451995849609375</real>
+				</dict>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>

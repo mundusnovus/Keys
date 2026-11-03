@@ -1,0 +1,264 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/ItemDetailView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Delete this item?",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "It may have been deleted on another device.",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 29
+        }
+      },
+      {
+        "comment": "",
+        "key": "Item not found",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit item",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "More actions",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Remove Favorite",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "Favorite",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "Duplicate",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "More",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "It moves to Trash. Empty Trash removes it from this vault and from iCloud.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Remove favorite",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add to favorites",
+        "location": {
+          "startingColumn": 69,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy Password",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy username",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 176
+        }
+      },
+      {
+        "comment": "",
+        "key": "Username",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Site",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 182
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy one-time code",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 217
+        }
+      },
+      {
+        "comment": "",
+        "key": "One-time code",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 201
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld seconds",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 206
+        }
+      },
+      {
+        "comment": "",
+        "key": "The private key stays in the encrypted vault. Keys never shows it and never sends it anywhere.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 286
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notes",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 300
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hide %@",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 322
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show %@",
+        "location": {
+          "startingColumn": 75,
+          "startingLine": 322
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy %@",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 329
+        }
+      },
+      {
+        "comment": "",
+        "key": "This item is in Trash",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 336
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restore",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 339
+        }
+      },
+      {
+        "comment": "",
+        "key": "Details",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 350
+        }
+      },
+      {
+        "comment": "",
+        "key": "Previous passwords",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 359
+        }
+      }
+    ]
+  },
+  "version": 1
+}

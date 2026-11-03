@@ -1,0 +1,305 @@
+2026-11-03 00:07:46 +0000 [MT] Initial pipeline context: <IDEDistributionProcessingPipelineContext: 0x762e84f600; archive(resolved)="<IDEArchive: 0x7631ef1340>", distributionTask(resolved)="2", distributionDestination(resolved)="1", distributionMethod(resolved)="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team(resolved)="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	Chain (15, self inclusive):
+	<IDEDistributionProcessingPipelineContext: 0x762e84f600; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionProcessingPipelineContext: 0x762e84fc00; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc91e00; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc91b80; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc91900; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc91680; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc91400; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc91180; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc90f00; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc90c80; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc90a00; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc90780; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="<IDEProvisioningBasicTeam: 0x7632118680; teamID='KZFR2T5L2A', teamName='(null)'>">
+	<IDEDistributionContext: 0x762fc90500; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="(null)">
+	<IDEDistributionContext: 0x762fc90280; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="<IDEDistributionMethodMacAppStoreDistribution: 0x762fa842c0>", team="(null)">
+	<IDEDistributionContext: 0x1010d4ce0; archive = "<IDEArchive: 0x7631ef1340>", distributionMethod="(null)", team="(null)">
+</IDEDistributionProcessingPipelineContext: 0x762e84f600>
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionCreateDestRootStep
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionCopyItemStep
+2026-11-03 00:07:46 +0000 [MT] Running /usr/bin/ditto '-V' '/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app' '/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app'
+2026-11-03 00:07:46 +0000  >>> Copying /Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app 
+2026-11-03 00:07:46 +0000  copying file ./Contents/_CodeSignature/CodeResources ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/_CodeSignature/CodeResources
+2026-11-03 00:07:46 +0000  copying file ./Contents/MacOS/Keys ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/MacOS/Keys
+2026-11-03 00:07:46 +0000  copying file ./Contents/PlugIns/KeysFillMac.appex/Contents/_CodeSignature/CodeResources ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/PlugIns/KeysFillMac.appex/Contents/_CodeSignature/CodeResources
+2026-11-03 00:07:46 +0000  copying file ./Contents/PlugIns/KeysFillMac.appex/Contents/MacOS/KeysFillMac ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/PlugIns/KeysFillMac.appex/Contents/MacOS/KeysFillMac
+2026-11-03 00:07:46 +0000  copying file ./Contents/PlugIns/KeysFillMac.appex/Contents/Resources/Base.lproj/CredentialProviderViewController.nib ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/PlugIns/KeysFillMac.appex/Contents/Resources/Base.lproj/CredentialProviderViewController.nib
+2026-11-03 00:07:46 +0000  copying file ./Contents/PlugIns/KeysFillMac.appex/Contents/embedded.provisionprofile ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/PlugIns/KeysFillMac.appex/Contents/embedded.provisionprofile
+2026-11-03 00:07:46 +0000  copying file ./Contents/PlugIns/KeysFillMac.appex/Contents/Info.plist ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/PlugIns/KeysFillMac.appex/Contents/Info.plist
+2026-11-03 00:07:46 +0000  copying file ./Contents/Resources/Metadata.appintents/version.json ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Resources/Metadata.appintents/version.json
+2026-11-03 00:07:46 +0000  copying file ./Contents/Resources/Metadata.appintents/extract.actionsdata ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Resources/Metadata.appintents/extract.actionsdata
+2026-11-03 00:07:46 +0000  copying file ./Contents/Resources/AppIcon.icns ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Resources/AppIcon.icns
+2026-11-03 00:07:46 +0000  copying file ./Contents/Resources/AsteriaPixel-Regular.ttf ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Resources/AsteriaPixel-Regular.ttf
+2026-11-03 00:07:46 +0000  copying file ./Contents/Resources/Assets.car ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Resources/Assets.car
+2026-11-03 00:07:46 +0000  copying file ./Contents/Resources/PrivacyInfo.xcprivacy ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Resources/PrivacyInfo.xcprivacy
+2026-11-03 00:07:46 +0000  copying file ./Contents/embedded.provisionprofile ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/embedded.provisionprofile
+2026-11-03 00:07:46 +0000  copying file ./Contents/Info.plist ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/Info.plist
+2026-11-03 00:07:46 +0000  copying file ./Contents/PkgInfo ... 
+2026-11-03 00:07:46 +0000  cloned ./Contents/PkgInfo
+2026-11-03 00:07:46 +0000 [MT] /usr/bin/ditto exited with 0
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionEmbedProfileStep
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionInfoPlistStep
+2026-11-03 00:07:46 +0000 [MT] Skipping setting DTXcodeBuildDistribution because toolsBuildVersionName was nil.
+2026-11-03 00:07:46 +0000 [MT] Skipping setting DTXcodeBuildDistribution because toolsBuildVersionName was nil.
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionItemRemovalStep
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionAppThinningPlistStep
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionSymbolsStep
+2026-11-03 00:07:46 +0000 [MT] Writing /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Symbols/6FACA19B-A594-395E-A819-BD3E3A280260.symbols
+2026-11-03 00:07:46 +0000 [MT] Writing /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Symbols/6772CD44-32E1-394A-9B99-02EFA31A206A.symbols
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionCopyAppleProvidedContentStep
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionAppThinningStep
+2026-11-03 00:07:46 +0000 [MT] Skipping step: IDEDistributionAppThinningStep because it said so
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionArchThinningStep
+2026-11-03 00:07:46 +0000 [MT] Archs to thin for item /Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex are []
+2026-11-03 00:07:46 +0000 [MT] Archs to thin for item /Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app are []
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionODRStep
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionStripXattrsStep
+2026-11-03 00:07:46 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-11-03 00:07:46 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionCodesignStep
+2026-11-03 00:07:46 +0000 [MT] Entitlements for <IDEDistributionItem: 0x762f9592c0; bundleID='technology.asteria.keys.autofill-mac', path='<DVTFilePath:0x7631ef3090:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x762f959020; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x76323dbb80; name='Apple Development: DEMETRIA ALTHEA COHN (2NDC96P6PU)', hash='AFE43749F0BBCAFA4DF8A051C26CC2A7AFA57487', serialNumber='9F86E17C64188D0B4D16857B8EFA388', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2026-10-31 17:57:56 +0000''>', entitlements='{
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys.autofill-mac";
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}', teamID='KZFR2T5L2A', identifier='technology.asteria.keys.autofill-mac', executablePath='<DVTFilePath:0x762f958660:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex/Contents/MacOS/KeysFillMac'>', hardenedRuntime='0'>'>: {
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys.autofill-mac";
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}
+2026-11-03 00:07:46 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-11-03 00:07:46 +0000 [MT] Entitlements for <IDEDistributionItem: 0x762f9592c0; bundleID='technology.asteria.keys.autofill-mac', path='<DVTFilePath:0x7631ef3090:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x762f959020; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x76323dbb80; name='Apple Development: DEMETRIA ALTHEA COHN (2NDC96P6PU)', hash='AFE43749F0BBCAFA4DF8A051C26CC2A7AFA57487', serialNumber='9F86E17C64188D0B4D16857B8EFA388', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2026-10-31 17:57:56 +0000''>', entitlements='{
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys.autofill-mac";
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}', teamID='KZFR2T5L2A', identifier='technology.asteria.keys.autofill-mac', executablePath='<DVTFilePath:0x762f958660:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex/Contents/MacOS/KeysFillMac'>', hardenedRuntime='0'>'> are: {
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys.autofill-mac";
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}
+2026-11-03 00:07:46 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x762f9592c0; bundleID='technology.asteria.keys.autofill-mac', path='<DVTFilePath:0x7631ef3090:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x762f959020; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x76323dbb80; name='Apple Development: DEMETRIA ALTHEA COHN (2NDC96P6PU)', hash='AFE43749F0BBCAFA4DF8A051C26CC2A7AFA57487', serialNumber='9F86E17C64188D0B4D16857B8EFA388', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2026-10-31 17:57:56 +0000''>', entitlements='{
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys.autofill-mac";
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}', teamID='KZFR2T5L2A', identifier='technology.asteria.keys.autofill-mac', executablePath='<DVTFilePath:0x762f958660:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex/Contents/MacOS/KeysFillMac'>', hardenedRuntime='0'>'> to: /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/entitlements~~~rhhYlc
+2026-11-03 00:07:46 +0000 [MT] invoking codesign: <NSConcreteTask: 0x762e4cc500; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    379C60787364C73FBDD77E9D9D9FC2A31E1ADC12,
+    "--entitlements",
+    "/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/entitlements~~~rhhYlc",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex"
+)'>
+2026-11-03 00:07:46 +0000 [MT] codesign output: /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex: replacing existing signature
+/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex: signed bundle with Mach-O thin (arm64) [technology.asteria.keys.autofill-mac]
+2026-11-03 00:07:46 +0000 [MT] Entitlements for <IDEDistributionItem: 0x762f959260; bundleID='technology.asteria.keys', path='<DVTFilePath:0x76307f33c0:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x762f959200; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x76323dbaa0; name='Apple Development: DEMETRIA ALTHEA COHN (2NDC96P6PU)', hash='AFE43749F0BBCAFA4DF8A051C26CC2A7AFA57487', serialNumber='9F86E17C64188D0B4D16857B8EFA388', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2026-10-31 17:57:56 +0000''>', entitlements='{
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys";
+    "com.apple.developer.aps-environment" = development;
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.icloud-container-identifiers" =     (
+        "iCloud.technology.asteria.keys"
+    );
+    "com.apple.developer.icloud-services" =     (
+        CloudKit
+    );
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "com.apple.security.files.user-selected.read-write" = 1;
+    "com.apple.security.network.client" = 1;
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}', teamID='KZFR2T5L2A', identifier='technology.asteria.keys', executablePath='<DVTFilePath:0x762f9583c0:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/MacOS/Keys'>', hardenedRuntime='0'>'>: {
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys";
+    "com.apple.developer.aps-environment" = production;
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.icloud-container-environment" = Production;
+    "com.apple.developer.icloud-container-identifiers" =     (
+        "iCloud.technology.asteria.keys"
+    );
+    "com.apple.developer.icloud-services" =     (
+        CloudKit
+    );
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "com.apple.security.files.user-selected.read-write" = 1;
+    "com.apple.security.network.client" = 1;
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}
+2026-11-03 00:07:46 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-11-03 00:07:46 +0000 [MT] Entitlements for <IDEDistributionItem: 0x762f959260; bundleID='technology.asteria.keys', path='<DVTFilePath:0x76307f33c0:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x762f959200; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x76323dbaa0; name='Apple Development: DEMETRIA ALTHEA COHN (2NDC96P6PU)', hash='AFE43749F0BBCAFA4DF8A051C26CC2A7AFA57487', serialNumber='9F86E17C64188D0B4D16857B8EFA388', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2026-10-31 17:57:56 +0000''>', entitlements='{
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys";
+    "com.apple.developer.aps-environment" = development;
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.icloud-container-identifiers" =     (
+        "iCloud.technology.asteria.keys"
+    );
+    "com.apple.developer.icloud-services" =     (
+        CloudKit
+    );
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "com.apple.security.files.user-selected.read-write" = 1;
+    "com.apple.security.network.client" = 1;
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}', teamID='KZFR2T5L2A', identifier='technology.asteria.keys', executablePath='<DVTFilePath:0x762f9583c0:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/MacOS/Keys'>', hardenedRuntime='0'>'> are: {
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys";
+    "com.apple.developer.aps-environment" = production;
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.icloud-container-environment" = Production;
+    "com.apple.developer.icloud-container-identifiers" =     (
+        "iCloud.technology.asteria.keys"
+    );
+    "com.apple.developer.icloud-services" =     (
+        CloudKit
+    );
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "com.apple.security.files.user-selected.read-write" = 1;
+    "com.apple.security.network.client" = 1;
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}
+2026-11-03 00:07:46 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x762f959260; bundleID='technology.asteria.keys', path='<DVTFilePath:0x76307f33c0:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x762f959200; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x76323dbaa0; name='Apple Development: DEMETRIA ALTHEA COHN (2NDC96P6PU)', hash='AFE43749F0BBCAFA4DF8A051C26CC2A7AFA57487', serialNumber='9F86E17C64188D0B4D16857B8EFA388', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2026-10-31 17:57:56 +0000''>', entitlements='{
+    "com.apple.application-identifier" = "KZFR2T5L2A.technology.asteria.keys";
+    "com.apple.developer.aps-environment" = development;
+    "com.apple.developer.authentication-services.autofill-credential-provider" = 1;
+    "com.apple.developer.icloud-container-identifiers" =     (
+        "iCloud.technology.asteria.keys"
+    );
+    "com.apple.developer.icloud-services" =     (
+        CloudKit
+    );
+    "com.apple.developer.team-identifier" = KZFR2T5L2A;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.application-groups" =     (
+        "group.technology.asteria.keys"
+    );
+    "com.apple.security.files.user-selected.read-write" = 1;
+    "com.apple.security.network.client" = 1;
+    "keychain-access-groups" =     (
+        "KZFR2T5L2A.technology.asteria.keys"
+    );
+}', teamID='KZFR2T5L2A', identifier='technology.asteria.keys', executablePath='<DVTFilePath:0x762f9583c0:'/Users/ant/Desktop/Asteria Technology/Keys/build/Keys-macOS.xcarchive/Products/Applications/Keys.app/Contents/MacOS/Keys'>', hardenedRuntime='0'>'> to: /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/entitlements~~~KVQ4yk
+2026-11-03 00:07:46 +0000 [MT] invoking codesign: <NSConcreteTask: 0x762e4cc640; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    379C60787364C73FBDD77E9D9D9FC2A31E1ADC12,
+    "--entitlements",
+    "/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/entitlements~~~KVQ4yk",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app"
+)'>
+2026-11-03 00:07:46 +0000 [MT] codesign output: /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app: replacing existing signature
+/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app: signed app bundle with Mach-O thin (arm64) [technology.asteria.keys]
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionZipODRItemStep
+2026-11-03 00:07:46 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-11-03 00:07:46 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-11-03 00:07:46 +0000 [MT] Processing step: IDEDistributionCreatePKGStep
+2026-11-03 00:07:46 +0000 [MT] Running /usr/bin/productbuild '--sign' '3rd Party Mac Developer Installer: DEMETRIA ALTHEA COHN (KZFR2T5L2A)' '--symbolication' '/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Symbols' '--component' '/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app' '/Applications' '/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Packages/Keys.pkg'
+2026-11-03 00:07:47 +0000  productbuild: Adding component at /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app
+productbuild: Signing product with identity "3rd Party Mac Developer Installer: DEMETRIA ALTHEA COHN (KZFR2T5L2A)" from keychain /Users/ant/Library/Keychains/login.keychain-db
+productbuild: Adding certificate "Apple Worldwide Developer Relations Certification Authority"
+productbuild: Adding certificate "Apple Root CA"
+productbuild: Wrote product to /var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Packages/Keys.pkg
+productbuild: Supported OS versions: [Min: 27.2, Before: None]
+2026-11-03 00:07:47 +0000 [MT] /usr/bin/productbuild exited with 0
+2026-11-03 00:07:47 +0000 [MT] Processing step: IDEDistributionAppStoreInformationStep
+2026-11-03 00:07:47 +0000 [MT] Skipping step: IDEDistributionAppStoreInformationStep because it said so
+2026-11-03 00:07:47 +0000 [MT] Processing step: IDEDistributionGenerateProcessedDistributionItems
+2026-11-03 00:07:47 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x763234ce00:'/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app/Contents/PlugIns/KeysFillMac.appex'>
+2026-11-03 00:07:47 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x762f9598c0:'/var/folders/t7/sml6778930dd7q_b0c29_z200000gn/T/XcodeDistPipeline.~~~aJF2k9/Root/Applications/Keys.app'>
+2026-11-03 00:07:47 +0000 [MT] Processing step: IDEDistributionCreateManifestStep
+2026-11-03 00:07:47 +0000 [MT] Skipping step: IDEDistributionCreateManifestStep because it said so

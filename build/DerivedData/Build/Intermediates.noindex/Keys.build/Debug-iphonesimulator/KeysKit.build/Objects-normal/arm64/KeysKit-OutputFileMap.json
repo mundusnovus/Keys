@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit-primary.dia",
+    "emit-module-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit-primary-emit-module.dia",
+    "pch" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit-primary.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/Autofill.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.dia",
+    "index-unit-output-path" : "/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.o",
+    "llvm-bc" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.bc",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill.swiftdeps",
+    "swiftmodule" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/Autofill~partial.swiftmodule"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/KeysKit.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.dia",
+    "index-unit-output-path" : "/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.o",
+    "llvm-bc" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.bc",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit.swiftdeps",
+    "swiftmodule" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/KeysKit~partial.swiftmodule"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/VaultCodes.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.dia",
+    "index-unit-output-path" : "/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.o",
+    "llvm-bc" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.bc",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes.swiftdeps",
+    "swiftmodule" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCodes~partial.swiftmodule"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/VaultCrypto.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.dia",
+    "index-unit-output-path" : "/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.o",
+    "llvm-bc" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.bc",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto.swiftdeps",
+    "swiftmodule" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultCrypto~partial.swiftmodule"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/VaultModel.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.dia",
+    "index-unit-output-path" : "/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.o",
+    "llvm-bc" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.bc",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel.swiftdeps",
+    "swiftmodule" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/KeysKit.build/Objects-normal/arm64/VaultModel~partial.swiftmodule"
+  }
+}

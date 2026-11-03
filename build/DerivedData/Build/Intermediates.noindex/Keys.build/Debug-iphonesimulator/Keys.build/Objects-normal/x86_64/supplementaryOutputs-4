@@ -1,0 +1,30 @@
+{
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/KeysKit.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/KeysKit.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/KeysKit.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/KeysKit.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/KeysKit.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/KeysKit.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/VaultCodes.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCodes.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCodes.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCodes.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCodes.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCodes.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/VaultCrypto.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCrypto.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCrypto.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCrypto.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCrypto.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultCrypto.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/VaultModel.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultModel.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultModel.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultModel.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultModel.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/x86_64/VaultModel.swiftdeps"
+  }
+}

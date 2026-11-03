@@ -1,0 +1,12 @@
+{
+  "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/Autofill.swift" : {
+    "abi-baseline-json" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac.abi.json",
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac-primary.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac-primary.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac-primary.dia",
+    "objc-header" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac-Swift.h",
+    "swiftdoc" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac.swiftdoc",
+    "swiftmodule" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac.swiftmodule",
+    "swiftsourceinfo" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/Keys/IntermediateBuildFilesPath/Keys.build/Release/KeysFillMac.build/Objects-normal/arm64/KeysFillMac.swiftsourceinfo"
+  }
+}

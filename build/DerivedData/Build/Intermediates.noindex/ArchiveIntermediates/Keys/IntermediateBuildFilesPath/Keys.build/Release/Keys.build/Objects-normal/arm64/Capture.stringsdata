@@ -1,0 +1,160 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/Capture.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Capture",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turn on Capture from a sentence in Settings to draft a login here. You can still add one yourself.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Capture is off",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turn on Apple Intelligence in Settings to draft a login from a sentence. You can still add one yourself.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 66
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apple Intelligence is off",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "Leave the password out. Capture runs on this device and never sees your vault.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "Describe the login",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "For example: my work email at mail.example.com, username ada",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Draft with Apple Intelligence",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Review before saving",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apple Intelligence suggested these fields. Check them, then add the password yourself.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "Title",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "Website",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "Username",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "Note",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start over",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save login",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 153
+        }
+      }
+    ]
+  },
+  "version": 1
+}

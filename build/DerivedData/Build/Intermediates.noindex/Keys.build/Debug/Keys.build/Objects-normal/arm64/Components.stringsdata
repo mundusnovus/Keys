@@ -1,0 +1,64 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/Components.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Security score %lld out of 100",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 162
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "of 100",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 157
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@. %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Favorite",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 217
+        }
+      },
+      {
+        "comment": "",
+        "key": "Has a one-time code",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy %@",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 275
+        }
+      }
+    ]
+  },
+  "version": 1
+}

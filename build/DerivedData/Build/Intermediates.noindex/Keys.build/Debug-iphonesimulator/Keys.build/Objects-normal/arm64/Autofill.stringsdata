@@ -1,0 +1,72 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/KeysKit/Autofill.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Codes",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 328
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 328
+        }
+      },
+      {
+        "comment": "",
+        "key": "Asteria",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 310
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 311
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 312
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 315
+        }
+      },
+      {
+        "comment": "",
+        "key": "Use Face ID or Touch ID",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 317
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 330
+        }
+      }
+    ]
+  },
+  "version": 1
+}

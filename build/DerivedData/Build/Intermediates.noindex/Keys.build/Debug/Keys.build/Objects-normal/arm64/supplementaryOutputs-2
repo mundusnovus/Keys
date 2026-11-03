@@ -1,0 +1,30 @@
+{
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/ContentView.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/ContentView.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/ContentView.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/DemoVault.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/DemoVault.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/DemoVault.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/DemoVault.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/DemoVault.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/DemoVault.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/GeneratorSheet.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/GeneratorSheet.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/GeneratorSheet.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/GeneratorSheet.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/GeneratorSheet.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/GeneratorSheet.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/HealthView.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HealthView.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HealthView.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HealthView.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HealthView.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug/Keys.build/Objects-normal/arm64/HealthView.swiftdeps"
+  }
+}

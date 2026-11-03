@@ -1,0 +1,472 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/VaultViews.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Opening Keys",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys cannot reset your master password. Your recovery key is the only backup.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 153
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your vault, only yours.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "Use a recovery key",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 147
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 102
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hide master password",
+        "location": {
+          "startingColumn": 70,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show master password",
+        "location": {
+          "startingColumn": 95,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "A recovery key comes next. It is shown once.",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 312
+        }
+      },
+      {
+        "comment": "",
+        "key": "A vault that never leaves your devices unencrypted.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "Create your vault",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 246
+        }
+      },
+      {
+        "comment": "",
+        "key": "Choose a master password. It wraps the key to everything in Keys, and only you know it.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 247
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 252
+        }
+      },
+      {
+        "comment": "",
+        "key": "Master password",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 265
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hide master password",
+        "location": {
+          "startingColumn": 62,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show master password",
+        "location": {
+          "startingColumn": 87,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "At least 12 characters",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 256
+        }
+      },
+      {
+        "comment": "",
+        "key": "At least 12 characters",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 258
+        }
+      },
+      {
+        "comment": "",
+        "key": "Confirm",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 282
+        }
+      },
+      {
+        "comment": "",
+        "key": "Type it again",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 283
+        }
+      },
+      {
+        "comment": "",
+        "key": "Confirm master password",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 290
+        }
+      },
+      {
+        "comment": "",
+        "key": "Create vault",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 361
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password strength: %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 427
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keys shows this once. Without it, a forgotten master password cannot be recovered. Anyone with this key can open your vault, so keep it somewhere only you can reach.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 446
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save your recovery key",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 444
+        }
+      },
+      {
+        "comment": "",
+        "key": "Recovery key",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 458
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy key",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 463
+        }
+      },
+      {
+        "comment": "",
+        "key": "Saved",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 470
+        }
+      },
+      {
+        "comment": "",
+        "key": "I saved it",
+        "location": {
+          "startingColumn": 57,
+          "startingLine": 470
+        }
+      },
+      {
+        "comment": "",
+        "key": "Continue",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 478
+        }
+      },
+      {
+        "comment": "",
+        "key": "Recovery Key",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 528
+        }
+      },
+      {
+        "comment": "",
+        "key": "Recovery key",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 504
+        }
+      },
+      {
+        "comment": "",
+        "key": "The groups of four characters, exactly as Keys showed them.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 509
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock with recovery key",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 523
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 531
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open the iCloud vault?",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 592
+        }
+      },
+      {
+        "comment": "",
+        "key": "iCloud has a different Keys vault than this device. Keys will not merge two master passwords.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 555
+        }
+      },
+      {
+        "comment": "",
+        "key": "Two vaults",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 553
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sync pauses. This device keeps its own vault.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 564
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keep this device's vault",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 562
+        }
+      },
+      {
+        "comment": "",
+        "key": "Removes the vault that exists only on this device.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 578
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open the iCloud vault",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 576
+        }
+      },
+      {
+        "comment": "",
+        "key": "Replace this device's vault",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 593
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 596
+        }
+      },
+      {
+        "comment": "",
+        "key": "Items stored only on this device will be removed.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 598
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock Keys without typing your master password. The key is kept in the keychain, behind %@, and never leaves this device.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 618
+        }
+      },
+      {
+        "comment": "",
+        "key": "Not now",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 635
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 644
+        }
+      },
+      {
+        "comment": "",
+        "key": "New Master Password",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 689
+        }
+      },
+      {
+        "comment": "",
+        "key": "New master password",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 665
+        }
+      },
+      {
+        "comment": "",
+        "key": "Confirm new master password",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 666
+        }
+      },
+      {
+        "comment": "",
+        "key": "Use at least 12 characters. The recovery key you just used stays valid.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 669
+        }
+      },
+      {
+        "comment": "",
+        "key": "Set master password",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 684
+        }
+      },
+      {
+        "comment": "",
+        "key": "Later",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 692
+        }
+      }
+    ]
+  },
+  "version": 1
+}

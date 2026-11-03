@@ -1,0 +1,30 @@
+{
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/IntelligenceViews.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/IntelligenceViews.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/IntelligenceViews.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/IntelligenceViews.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/IntelligenceViews.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/IntelligenceViews.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/ItemDetailView.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemDetailView.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemDetailView.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemDetailView.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemDetailView.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemDetailView.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/ItemEditorView.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemEditorView.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemEditorView.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemEditorView.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemEditorView.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/ItemEditorView.swiftdeps"
+  },
+  "/Users/ant/Desktop/Asteria Technology/Keys/Keys/KeysIntents.swift" : {
+    "const-values" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/KeysIntents.swiftconstvalues",
+    "dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/KeysIntents.d",
+    "diagnostics" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/KeysIntents.dia",
+    "object" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/KeysIntents.o",
+    "swift-dependencies" : "/Users/ant/Desktop/Asteria Technology/Keys/build/DerivedData/Build/Intermediates.noindex/Keys.build/Debug-iphonesimulator/Keys.build/Objects-normal/arm64/KeysIntents.swiftdeps"
+  }
+}

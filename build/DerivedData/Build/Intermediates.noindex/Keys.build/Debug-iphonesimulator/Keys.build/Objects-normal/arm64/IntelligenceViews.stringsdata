@@ -1,0 +1,184 @@
+{
+  "source": "/Users/ant/Desktop/Asteria Technology/Keys/Keys/IntelligenceViews.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Security Coach",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reading your security findings…",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "What to do next",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "What the coach sees",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "Counts only. Never a password, username, site name, note, or card number.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "Get a briefing",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "Regenerate",
+        "location": {
+          "startingColumn": 70,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "A short, practical plan for the findings in your vault. It never sees a secret.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apple Intelligence",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apple Intelligence Search",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 223
+        }
+      },
+      {
+        "comment": "",
+        "key": "Runs on this device. The words you type never go to a server.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 215
+        }
+      },
+      {
+        "comment": "",
+        "key": "Describe what you are looking for. Keys turns it into filters, then searches locally.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Find with Apple Intelligence",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 168
+        }
+      },
+      {
+        "comment": "",
+        "key": "For example: old passwords in logins",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "Find",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 183
+        }
+      },
+      {
+        "comment": "",
+        "key": "Try",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 193
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unlock Keys to check the vault.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 274
+        }
+      },
+      {
+        "comment": "",
+        "key": "No reused, short, or old passwords.",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 267
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld items could be stronger.",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 268
+        }
+      }
+    ]
+  },
+  "version": 1
+}
