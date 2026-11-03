@@ -190,9 +190,10 @@ struct HomeView: View {
                              color: session.syncPhase == .failed ? Palette.alert : Palette.sea)
                     VStack(alignment: .leading, spacing: 4) {
                         Text(session.syncPhase.label).font(.reading(.headline, weight: .semibold))
-                        Text(session.syncMessage).font(.reading(.footnote)).foregroundStyle(.secondary)
                         if let error = session.syncError, !error.isEmpty {
                             Text(error).font(.reading(.footnote)).foregroundStyle(Palette.alert)
+                        } else {
+                            Text(session.syncMessage).font(.reading(.footnote)).foregroundStyle(.secondary)
                         }
                         if session.pendingUploads > 0 {
                             Text("\(session.pendingUploads) waiting to upload")

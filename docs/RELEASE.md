@@ -19,6 +19,8 @@ the App Store listing are the owner's steps.
 
 ## CloudKit Production schema (required for TestFlight and the App Store)
 
+See `docs/CLOUDKIT-SCHEMA.md` for the exact record fields and the current iPhone/Mac recovery steps.
+
 A development build creates the `Header` and `Item` record types in the Development environment. A
 TestFlight/App Store build uses Production and cannot see them until the schema is deployed.
 

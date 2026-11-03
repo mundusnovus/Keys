@@ -114,6 +114,7 @@ final class VaultSession {
     var needsPasswordReset = false
     var recoveryMessage = ""
     var suggestBiometrics = false
+    var setupBlockedForICloud = false
 
     // Sync, mirrored from CloudSync so SwiftUI observes one object.
     var syncPhase: SyncPhase = .idle
@@ -272,6 +273,7 @@ final class VaultSession {
         observeAccountChanges()
         startSyncServices()
         let local = VaultDisk.read()
+        setupBlockedForICloud = false
         switch await cloud.lookupHeader() {
         case .found(let header):
             if let local {
@@ -296,11 +298,21 @@ final class VaultSession {
             if local != nil { scheduleSync() }
         case .unavailable:
             iCloudOff = true
-            phase = local == nil ? .setup : .locked
             if local == nil {
-                message = "iCloud is not available. A vault created now stays on this device until iCloud is back."
+                phase = .setup
+                if cloud.isEnabled {
+                    // Never invite a second vault while an iCloud vault might exist but cannot be read.
+                    // The person can retry, or explicitly choose a device-only vault.
+                    setupBlockedForICloud = true
+                    message = cloud.lastLookupError
+                        ?? "iCloud is not available. Check the connection and try again, or create a vault on this device only."
+                } else {
+                    setupBlockedForICloud = false
+                    message = "iCloud is off for this build. A vault created now stays on this device."
+                }
             } else {
-                syncMessage = "iCloud is not available. This vault stays on this device until it is."
+                phase = .locked
+                syncMessage = cloud.lastLookupError ?? "iCloud is not available. This vault stays on this device until it is."
             }
         }
         autofillOn = await IdentityPublisher.autofillEnabled()
@@ -341,6 +353,41 @@ final class VaultSession {
     }
 
     // MARK: - Setup and unlock
+
+    /// Retries the iCloud header lookup without leaving the setup screen. A missing schema or a
+    /// different CloudKit environment is reported here instead of silently starting a second vault.
+    func retryICloudForSetup() async {
+        guard phase == .setup else { return }
+        setupBlockedForICloud = true
+        message = "Checking iCloud…"
+        switch await cloud.lookupHeader() {
+        case .found(let header):
+            var file = VaultFile.empty(header: header)
+            file.headerNeedsUpload = false
+            try? VaultDisk.write(file)
+            cloud.resetToken()
+            setupBlockedForICloud = false
+            phase = .locked
+            message = "This iCloud account already has a Keys vault. Unlock it with the master password from your other device."
+            reflectCloud()
+        case .absent:
+            setupBlockedForICloud = false
+            iCloudOff = false
+            message = ""
+        case .unavailable:
+            setupBlockedForICloud = true
+            message = cloud.lastLookupError
+                ?? "iCloud is still not available. Check the connection and try again."
+        }
+    }
+
+    /// The explicit "not now" choice. A vault created here stays local; it will not be merged with an
+    /// iCloud vault made on another device without the mismatch screen.
+    func allowDeviceOnlySetup() {
+        setupBlockedForICloud = false
+        iCloudOff = true
+        message = "This vault will stay on this device until you sign in to iCloud."
+    }
 
     func create(password typed: String, confirm: String) async {
         guard typed == confirm else {
@@ -587,7 +634,9 @@ final class VaultSession {
             syncMessage = "Sync is paused. This device is keeping its own vault."
         case .offline(let status):
             syncError = status
-            syncMessage = status
+            // The detailed error is shown once, in red. Repeating it as the status line made the
+            // sync card say the same sentence twice.
+            syncMessage = "Keys couldn't finish syncing."
             iCloudOff = true
         case .busy:
             break

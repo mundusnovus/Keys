@@ -12,6 +12,7 @@ and macOS 27.
 | Design system | `Keys/Theme.swift` (SF Pro, Asteria Pixel, hierarchical SF Symbols, Liquid Glass) |
 | Product | `docs/PRODUCT.md` |
 | Release | `docs/RELEASE.md` |
+| iCloud schema | `docs/CLOUDKIT-SCHEMA.md` |
 
 ## Build and test
 

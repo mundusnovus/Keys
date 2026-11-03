@@ -2,7 +2,7 @@ import CloudKit
 import Foundation
 import Observation
 
-enum HeaderLookup: Sendable {
+enum HeaderLookup: Sendable, Equatable {
     case found(VaultHeader)
     case absent
     case unavailable
@@ -80,6 +80,7 @@ final class CloudSync {
     private(set) var lastSync: Date?
     private(set) var lastMessage = "Not synced yet."
     private(set) var lastError: String?
+    private(set) var lastLookupError: String?
     private(set) var pendingUploads = 0
     private(set) var pendingDeletes = 0
 
@@ -161,14 +162,33 @@ final class CloudSync {
     }
 
     func lookupHeader() async -> HeaderLookup {
-        guard isEnabled else { return .unavailable }
-        guard await accountAvailable() else { return .unavailable }
-        return await withTaskGroup(of: HeaderLookup.self) { group in
+        lastLookupError = nil
+        guard isEnabled else {
+            lastLookupError = "iCloud is off for this build."
+            return .unavailable
+        }
+        #if DEBUG
+        // Reproduces the TestFlight/Production schema failure on a simulator for the blocked-setup UI.
+        if ProcessInfo.processInfo.arguments.contains("-cloud-unavailable") {
+            lastLookupError = "Keys' CloudKit schema is not deployed in this environment. In CloudKit Console, deploy Header and Item from Development to Production, then try again."
+            return .unavailable
+        }
+        #endif
+        guard await accountAvailable() else {
+            lastLookupError = "Sign in to iCloud in Settings to keep Keys on all your devices."
+            return .unavailable
+        }
+        let result = await withTaskGroup(of: HeaderLookup.self) { group in
             group.addTask { @MainActor in
                 do {
                     if let header = try await self.fetchHeader() { return .found(header) }
-                    return .absent
+                    // No header record is not the same as no schema. In Production, a missing record
+                    // type must not become "create a new vault here", which would fork the person's data.
+                    if try await self.headerTypeExists() { return .absent }
+                    self.lastLookupError = "Keys' CloudKit schema is not deployed in this environment. Deploy Header and Item in CloudKit Console, then try again."
+                    return .unavailable
                 } catch {
+                    self.lastLookupError = Self.friendly(error)
                     return .unavailable
                 }
             }
@@ -179,6 +199,32 @@ final class CloudSync {
             let first = await group.next() ?? .unavailable
             group.cancelAll()
             return first
+        }
+        if result == .unavailable, lastLookupError == nil {
+            lastLookupError = "iCloud did not answer in time. Check the connection and try again."
+        }
+        return result
+    }
+
+    /// Distinguishes "the Header type exists but has no record" from "this environment has no Keys
+    /// schema". The first is a new vault; the second is a released build talking to an undeployed
+    /// Production database, and must never invite the person to create a second vault.
+    private func headerTypeExists() async throws -> Bool {
+        guard let database else { throw VaultError.unavailable }
+        let query = CKQuery(recordType: "Header", predicate: NSPredicate(value: true))
+        do {
+            _ = try await database.records(matching: query, inZoneWith: zoneID,
+                                           desiredKeys: [], resultsLimit: 1)
+            return true
+        } catch let error as CKError {
+            let text = error.localizedDescription
+            if error.code == .invalidArguments
+                || text.contains("Cannot create new type")
+                || text.contains("production schema")
+                || text.contains("Unknown record type") {
+                return false
+            }
+            throw error
         }
     }
 
@@ -628,6 +674,11 @@ final class CloudSync {
     static func friendly(_ error: Error) -> String {
         if let error = error as? SyncFailure { return error.localizedDescription }
         if let error = error as? CKError {
+            let text = error.localizedDescription
+            if text.contains("Cannot create new type") || text.contains("production schema")
+                || text.contains("Unknown record type") {
+                return "Keys' CloudKit schema is not deployed in this environment. In CloudKit Console, deploy Header and Item from Development to Production, then try again."
+            }
             switch error.code {
             case .notAuthenticated, .accountTemporarilyUnavailable:
                 return "Sign in to iCloud in Settings to keep Keys on all your devices."

@@ -241,12 +241,20 @@ struct SetupView: View {
                         .multilineTextAlignment(.center)
                 }
 
+                if session.setupBlockedForICloud {
+                    iCloudBlockedCard
+                } else {
                 GlassCard(tint: Palette.sea) {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Create your vault").font(.reading(.title2, weight: .semibold))
                         Text("Choose a master password. It wraps the key to everything in Keys, and only you know it.")
                             .font(.reading(.callout))
                             .foregroundStyle(.secondary)
+                        if session.syncAvailable {
+                            Text("If you already use Keys on another device, open it first. A vault created here is a new vault, not a copy of that one.")
+                                .font(.reading(.footnote))
+                                .foregroundStyle(.secondary)
+                        }
 
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Master password").font(.reading(.caption, weight: .semibold)).foregroundStyle(.secondary)
@@ -320,16 +328,51 @@ struct SetupView: View {
                         .multilineTextAlignment(.center)
                 }
                 #endif
+                }
                 Spacer(minLength: 24)
             }
             .padding(24)
             .frame(maxWidth: .infinity)
         }
         .scrollDismissesKeyboard(.interactively)
-        .onAppear { focus = .password }
+        .onAppear {
+            if !session.setupBlockedForICloud { focus = .password }
+        }
         #if os(iOS)
         .safeAreaInset(edge: .bottom) { setupActionBar }
         #endif
+    }
+
+    private var iCloudBlockedCard: some View {
+        GlassCard(tint: Palette.gold) {
+            VStack(alignment: .leading, spacing: 14) {
+                Label("iCloud isn't ready", systemImage: "icloud.slash")
+                    .font(.reading(.title3, weight: .semibold))
+                Text(session.message)
+                    .font(.reading(.callout))
+                    .foregroundStyle(.secondary)
+                Text("This build uses the \(session.syncEnvironment) iCloud environment.")
+                    .font(.reading(.footnote))
+                    .foregroundStyle(.tertiary)
+                Text("If you already use Keys on another device, make sure both devices are signed in to the same iCloud account and running the same version. A Debug build uses the Development iCloud environment; TestFlight and App Store builds use Production.")
+                    .font(.reading(.footnote))
+                    .foregroundStyle(.secondary)
+                Button {
+                    Task { await session.retryICloudForSetup() }
+                } label: {
+                    Label("Try Again", systemImage: "arrow.clockwise")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                Button("Create a vault on this device") {
+                    session.allowDeviceOnlySetup()
+                }
+                .buttonStyle(.borderless)
+                .font(.reading(.subheadline, weight: .medium))
+            }
+        }
+        .frame(maxWidth: 460)
     }
 
     #if os(iOS)
@@ -347,7 +390,9 @@ struct SetupView: View {
 
     /// The primary action stays above the keyboard. Putting it inside the card let the keyboard hide
     /// the only way forward on a first run.
+    @ViewBuilder
     private var setupActionBar: some View {
+        if !session.setupBlockedForICloud {
         VStack(spacing: 8) {
             if let actionMessage {
                 Text(actionMessage)
@@ -368,6 +413,7 @@ struct SetupView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
         .background(.bar)
+        }
     }
     #endif
 
